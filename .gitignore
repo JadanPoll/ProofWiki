@@ -1,0 +1,36 @@
+# Raw/derived pipeline data -- large, and fully regenerable by re-running the
+# pipeline (see README.md / PROJECT_NOTES.md). Not committing these keeps the
+# repo small and avoids GitHub's 100MB per-file hard limit outright (the raw
+# dump alone is 200MB+).
+proofwiki-dump.xml
+proofwiki-dump.xml.gz
+proofwiki_graph.graphml
+graph_nodes.json
+graph_edges.json
+page_titles.json
+redirect_map.json
+core_graph.json
+cluster_hierarchy.json
+viz_data.json
+wiki_pages/
+
+# viz_data.json's contents are already inlined into explorer.html (the actual
+# shareable deliverable), so nothing of value is lost by not tracking it
+# separately.
+
+# Debug/sample scratch output, not real project content
+_cluster_sample.txt
+_defof_check_result.txt
+_sample_*.txt
+
+# Runtime artifacts
+__pycache__/
+*.pyc
+
+# Claude Code's own local tooling -- not part of the shipped project
+.claude/
+.cc-history/
+
+# A separate, unrelated project living in this same directory -- not part of
+# this repo at all
+polynomial-exploration/

@@ -1,0 +1,625 @@
+<title>ProofWiki Concept Map -- Top-Level Preview</title>
+<style>
+  :root {
+    --bg: #0a0d12;
+    --panel: #131822;
+    --border: rgba(255,255,255,0.08);
+    --text: #eef0f4;
+    --text-muted: #8b93a7;
+    --accent: #d9a441;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 20px 48px;
+  }
+  header {
+    max-width: 900px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 8px;
+    letter-spacing: 0.01em;
+  }
+  h1 .accent { color: var(--accent); }
+  p.sub {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+  .stage {
+    width: 100%;
+    max-width: 1200px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 24px;
+  }
+  .stage svg { display: block; width: 100%; height: auto; }
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    justify-content: center;
+    margin-top: 18px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  .legend .item { display: flex; align-items: center; gap: 7px; }
+  .legend .swatch { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  .note {
+    max-width: 700px;
+    margin-top: 22px;
+    padding: 14px 18px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .note b { color: var(--text); font-weight: 600; }
+  code {
+    font-family: ui-monospace, "Cascadia Code", "SF Mono", monospace;
+    background: rgba(255,255,255,0.06);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 0.85em;
+  }
+</style>
+
+<header>
+  <h1>ProofWiki Concept Map <span class="accent">/// top-level preview</span></h1>
+  <p class="sub">203 clusters from recursive Louvain community detection over 62,220 theorems, definitions,
+  axioms, symbols and proof-variants. Bubble size = member count, color = dominant concept type,
+  position/edges = a force-directed layout weighted by cross-cluster citation density. Hover a bubble for its label and count.</p>
+</header>
+
+<div class="stage">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1000" font-family="system-ui,-apple-system,sans-serif">
+<rect x="0" y="0" width="1400" height="1000" fill="#0a0d12"/>
+<line x1="646.3" y1="666.6" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.348"/>
+<line x1="614.6" y1="694.4" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.336"/>
+<line x1="546.6" y1="649.2" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.345"/>
+<line x1="723.1" y1="632.5" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.338"/>
+<line x1="652.3" y1="571.4" x2="546.6" y2="649.2" stroke="#5a6478" stroke-width="1" opacity="0.404"/>
+<line x1="546.6" y1="649.2" x2="689.0" y2="596.3" stroke="#5a6478" stroke-width="1" opacity="0.350"/>
+<line x1="614.6" y1="694.4" x2="641.5" y2="601.8" stroke="#5a6478" stroke-width="1" opacity="0.310"/>
+<line x1="723.1" y1="632.5" x2="641.5" y2="601.8" stroke="#5a6478" stroke-width="1" opacity="0.348"/>
+<line x1="599.8" y1="668.5" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.304"/>
+<line x1="595.5" y1="586.2" x2="641.5" y2="601.8" stroke="#5a6478" stroke-width="1" opacity="0.380"/>
+<line x1="708.0" y1="671.7" x2="641.5" y2="601.8" stroke="#5a6478" stroke-width="1" opacity="0.296"/>
+<line x1="646.3" y1="666.6" x2="652.3" y2="571.4" stroke="#5a6478" stroke-width="1" opacity="0.330"/>
+<line x1="652.3" y1="571.4" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.367"/>
+<line x1="652.3" y1="571.4" x2="547.1" y2="591.0" stroke="#5a6478" stroke-width="1" opacity="0.246"/>
+<line x1="633.1" y1="641.0" x2="723.1" y2="632.5" stroke="#5a6478" stroke-width="1" opacity="0.357"/>
+<line x1="723.1" y1="632.5" x2="546.6" y2="649.2" stroke="#5a6478" stroke-width="1" opacity="0.351"/>
+<line x1="595.5" y1="586.2" x2="723.1" y2="632.5" stroke="#5a6478" stroke-width="1" opacity="0.343"/>
+<line x1="723.1" y1="632.5" x2="614.6" y2="694.4" stroke="#5a6478" stroke-width="1" opacity="0.378"/>
+<line x1="633.1" y1="641.0" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.277"/>
+<line x1="633.1" y1="641.0" x2="652.3" y2="571.4" stroke="#5a6478" stroke-width="1" opacity="0.312"/>
+<line x1="652.3" y1="571.4" x2="641.5" y2="601.8" stroke="#5a6478" stroke-width="1" opacity="0.366"/>
+<line x1="646.3" y1="666.6" x2="723.1" y2="632.5" stroke="#5a6478" stroke-width="1" opacity="0.338"/>
+<line x1="599.8" y1="668.5" x2="652.3" y2="571.4" stroke="#5a6478" stroke-width="1" opacity="0.272"/>
+<line x1="614.6" y1="694.4" x2="546.6" y2="649.2" stroke="#5a6478" stroke-width="1" opacity="0.332"/>
+<line x1="595.5" y1="586.2" x2="546.6" y2="649.2" stroke="#5a6478" stroke-width="1" opacity="0.408"/>
+<line x1="646.3" y1="666.6" x2="546.6" y2="649.2" stroke="#5a6478" stroke-width="1" opacity="0.337"/>
+<line x1="546.6" y1="649.2" x2="641.5" y2="601.8" stroke="#5a6478" stroke-width="1" opacity="0.364"/>
+<line x1="522.1" y1="614.9" x2="546.6" y2="649.2" stroke="#5a6478" stroke-width="1" opacity="0.316"/>
+<line x1="595.5" y1="586.2" x2="652.3" y2="571.4" stroke="#5a6478" stroke-width="1" opacity="0.339"/>
+<line x1="606.6" y1="616.7" x2="652.3" y2="571.4" stroke="#5a6478" stroke-width="1" opacity="0.322"/>
+<line x1="708.0" y1="671.7" x2="546.6" y2="649.2" stroke="#5a6478" stroke-width="1" opacity="0.332"/>
+<line x1="646.3" y1="666.6" x2="689.0" y2="596.3" stroke="#5a6478" stroke-width="1" opacity="0.295"/>
+<line x1="590.7" y1="643.1" x2="689.0" y2="596.3" stroke="#5a6478" stroke-width="1" opacity="0.272"/>
+<line x1="558.8" y1="561.3" x2="689.0" y2="596.3" stroke="#5a6478" stroke-width="1" opacity="0.211"/>
+<line x1="614.6" y1="694.4" x2="689.0" y2="596.3" stroke="#5a6478" stroke-width="1" opacity="0.323"/>
+<line x1="708.0" y1="671.7" x2="689.0" y2="596.3" stroke="#5a6478" stroke-width="1" opacity="0.179"/>
+<line x1="522.1" y1="614.9" x2="689.0" y2="596.3" stroke="#5a6478" stroke-width="1" opacity="0.235"/>
+<line x1="652.3" y1="571.4" x2="689.0" y2="596.3" stroke="#5a6478" stroke-width="1" opacity="0.299"/>
+<line x1="522.1" y1="614.9" x2="614.6" y2="694.4" stroke="#5a6478" stroke-width="1" opacity="0.240"/>
+<line x1="522.1" y1="614.9" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.238"/>
+<line x1="680.4" y1="654.6" x2="689.0" y2="596.3" stroke="#5a6478" stroke-width="1" opacity="0.220"/>
+<line x1="646.3" y1="666.6" x2="595.5" y2="586.2" stroke="#5a6478" stroke-width="1" opacity="0.263"/>
+<line x1="646.3" y1="666.6" x2="680.4" y2="654.6" stroke="#5a6478" stroke-width="1" opacity="0.226"/>
+<line x1="680.4" y1="654.6" x2="546.6" y2="649.2" stroke="#5a6478" stroke-width="1" opacity="0.254"/>
+<line x1="680.4" y1="654.6" x2="652.3" y2="571.4" stroke="#5a6478" stroke-width="1" opacity="0.205"/>
+<line x1="680.4" y1="654.6" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.238"/>
+<line x1="680.4" y1="654.6" x2="633.1" y2="641.0" stroke="#5a6478" stroke-width="1" opacity="0.213"/>
+<line x1="680.4" y1="654.6" x2="614.6" y2="694.4" stroke="#5a6478" stroke-width="1" opacity="0.234"/>
+<line x1="680.4" y1="654.6" x2="723.1" y2="632.5" stroke="#5a6478" stroke-width="1" opacity="0.257"/>
+<line x1="590.7" y1="643.1" x2="614.6" y2="694.4" stroke="#5a6478" stroke-width="1" opacity="0.321"/>
+<line x1="590.7" y1="643.1" x2="599.8" y2="668.5" stroke="#5a6478" stroke-width="1" opacity="0.215"/>
+<line x1="488.4" y1="646.2" x2="689.0" y2="596.3" stroke="#5a6478" stroke-width="1" opacity="0.128"/>
+<line x1="689.0" y1="596.3" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.286"/>
+<line x1="590.7" y1="643.1" x2="723.1" y2="632.5" stroke="#5a6478" stroke-width="1" opacity="0.327"/>
+<line x1="590.7" y1="643.1" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.295"/>
+<line x1="590.7" y1="643.1" x2="566.0" y2="616.6" stroke="#5a6478" stroke-width="1" opacity="0.149"/>
+<line x1="590.7" y1="643.1" x2="652.3" y2="571.4" stroke="#5a6478" stroke-width="1" opacity="0.286"/>
+<line x1="599.8" y1="668.5" x2="689.0" y2="596.3" stroke="#5a6478" stroke-width="1" opacity="0.222"/>
+<line x1="646.3" y1="666.6" x2="633.1" y2="641.0" stroke="#5a6478" stroke-width="1" opacity="0.271"/>
+<line x1="522.1" y1="614.9" x2="652.3" y2="571.4" stroke="#5a6478" stroke-width="1" opacity="0.294"/>
+<line x1="652.3" y1="571.4" x2="614.6" y2="694.4" stroke="#5a6478" stroke-width="1" opacity="0.338"/>
+<line x1="595.5" y1="586.2" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.291"/>
+<line x1="595.5" y1="586.2" x2="614.6" y2="694.4" stroke="#5a6478" stroke-width="1" opacity="0.325"/>
+<line x1="595.5" y1="586.2" x2="566.0" y2="616.6" stroke="#5a6478" stroke-width="1" opacity="0.298"/>
+<line x1="488.4" y1="646.2" x2="546.6" y2="649.2" stroke="#5a6478" stroke-width="1" opacity="0.158"/>
+<line x1="708.0" y1="671.7" x2="652.3" y2="571.4" stroke="#5a6478" stroke-width="1" opacity="0.248"/>
+<line x1="551.8" y1="687.9" x2="652.3" y2="571.4" stroke="#5a6478" stroke-width="1" opacity="0.205"/>
+<line x1="595.5" y1="586.2" x2="689.0" y2="596.3" stroke="#5a6478" stroke-width="1" opacity="0.268"/>
+<line x1="599.8" y1="668.5" x2="546.6" y2="649.2" stroke="#5a6478" stroke-width="1" opacity="0.258"/>
+<line x1="590.7" y1="643.1" x2="595.5" y2="586.2" stroke="#5a6478" stroke-width="1" opacity="0.249"/>
+<line x1="590.7" y1="643.1" x2="546.6" y2="649.2" stroke="#5a6478" stroke-width="1" opacity="0.316"/>
+<line x1="547.1" y1="591.0" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.258"/>
+<line x1="547.1" y1="591.0" x2="546.6" y2="649.2" stroke="#5a6478" stroke-width="1" opacity="0.294"/>
+<line x1="606.6" y1="616.7" x2="547.1" y2="591.0" stroke="#5a6478" stroke-width="1" opacity="0.205"/>
+<line x1="614.6" y1="694.4" x2="547.1" y2="591.0" stroke="#5a6478" stroke-width="1" opacity="0.275"/>
+<line x1="723.1" y1="632.5" x2="652.3" y2="571.4" stroke="#5a6478" stroke-width="1" opacity="0.337"/>
+<line x1="566.0" y1="616.6" x2="723.1" y2="632.5" stroke="#5a6478" stroke-width="1" opacity="0.281"/>
+<line x1="646.3" y1="666.6" x2="641.5" y2="601.8" stroke="#5a6478" stroke-width="1" opacity="0.285"/>
+<line x1="641.5" y1="601.8" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.313"/>
+<line x1="590.7" y1="643.1" x2="633.1" y2="641.0" stroke="#5a6478" stroke-width="1" opacity="0.222"/>
+<line x1="590.7" y1="643.1" x2="708.0" y2="671.7" stroke="#5a6478" stroke-width="1" opacity="0.278"/>
+<line x1="522.1" y1="614.9" x2="641.5" y2="601.8" stroke="#5a6478" stroke-width="1" opacity="0.216"/>
+<line x1="633.1" y1="641.0" x2="641.5" y2="601.8" stroke="#5a6478" stroke-width="1" opacity="0.297"/>
+<line x1="590.7" y1="643.1" x2="641.5" y2="601.8" stroke="#5a6478" stroke-width="1" opacity="0.257"/>
+<line x1="646.3" y1="666.6" x2="522.1" y2="614.9" stroke="#5a6478" stroke-width="1" opacity="0.193"/>
+<line x1="633.1" y1="641.0" x2="546.6" y2="649.2" stroke="#5a6478" stroke-width="1" opacity="0.297"/>
+<line x1="599.8" y1="668.5" x2="723.1" y2="632.5" stroke="#5a6478" stroke-width="1" opacity="0.289"/>
+<line x1="599.8" y1="668.5" x2="614.6" y2="694.4" stroke="#5a6478" stroke-width="1" opacity="0.323"/>
+<line x1="723.1" y1="632.5" x2="689.0" y2="596.3" stroke="#5a6478" stroke-width="1" opacity="0.273"/>
+<line x1="671.7" y1="695.4" x2="614.6" y2="694.4" stroke="#5a6478" stroke-width="1" opacity="0.289"/>
+<line x1="671.7" y1="695.4" x2="652.3" y2="571.4" stroke="#5a6478" stroke-width="1" opacity="0.227"/>
+<line x1="671.7" y1="695.4" x2="546.6" y2="649.2" stroke="#5a6478" stroke-width="1" opacity="0.212"/>
+<line x1="671.7" y1="695.4" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.236"/>
+<line x1="606.6" y1="616.7" x2="723.1" y2="632.5" stroke="#5a6478" stroke-width="1" opacity="0.263"/>
+<line x1="606.6" y1="616.7" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.257"/>
+<line x1="646.3" y1="666.6" x2="606.6" y2="616.7" stroke="#5a6478" stroke-width="1" opacity="0.267"/>
+<line x1="606.6" y1="616.7" x2="641.5" y2="601.8" stroke="#5a6478" stroke-width="1" opacity="0.296"/>
+<line x1="547.1" y1="591.0" x2="689.0" y2="596.3" stroke="#5a6478" stroke-width="1" opacity="0.268"/>
+<line x1="633.1" y1="641.0" x2="566.0" y2="616.6" stroke="#5a6478" stroke-width="1" opacity="0.210"/>
+<line x1="566.0" y1="616.6" x2="547.1" y2="591.0" stroke="#5a6478" stroke-width="1" opacity="0.158"/>
+<line x1="566.0" y1="616.6" x2="614.6" y2="694.4" stroke="#5a6478" stroke-width="1" opacity="0.299"/>
+<line x1="566.0" y1="616.6" x2="546.6" y2="649.2" stroke="#5a6478" stroke-width="1" opacity="0.281"/>
+<line x1="708.0" y1="671.7" x2="566.0" y2="616.6" stroke="#5a6478" stroke-width="1" opacity="0.128"/>
+<line x1="641.5" y1="601.8" x2="689.0" y2="596.3" stroke="#5a6478" stroke-width="1" opacity="0.248"/>
+<line x1="566.0" y1="616.6" x2="641.5" y2="601.8" stroke="#5a6478" stroke-width="1" opacity="0.248"/>
+<line x1="566.0" y1="616.6" x2="652.3" y2="571.4" stroke="#5a6478" stroke-width="1" opacity="0.251"/>
+<line x1="633.1" y1="641.0" x2="614.6" y2="694.4" stroke="#5a6478" stroke-width="1" opacity="0.327"/>
+<line x1="646.3" y1="666.6" x2="614.6" y2="694.4" stroke="#5a6478" stroke-width="1" opacity="0.279"/>
+<line x1="606.6" y1="616.7" x2="614.6" y2="694.4" stroke="#5a6478" stroke-width="1" opacity="0.300"/>
+<line x1="606.6" y1="616.7" x2="546.6" y2="649.2" stroke="#5a6478" stroke-width="1" opacity="0.251"/>
+<line x1="595.5" y1="586.2" x2="606.6" y2="616.7" stroke="#5a6478" stroke-width="1" opacity="0.200"/>
+<line x1="590.7" y1="643.1" x2="606.6" y2="616.7" stroke="#5a6478" stroke-width="1" opacity="0.247"/>
+<line x1="603.0" y1="554.0" x2="646.3" y2="666.6" stroke="#5a6478" stroke-width="1" opacity="0.161"/>
+<line x1="595.5" y1="586.2" x2="633.1" y2="641.0" stroke="#5a6478" stroke-width="1" opacity="0.301"/>
+<line x1="708.0" y1="671.7" x2="723.1" y2="632.5" stroke="#5a6478" stroke-width="1" opacity="0.299"/>
+<line x1="522.1" y1="614.9" x2="606.6" y2="616.7" stroke="#5a6478" stroke-width="1" opacity="0.161"/>
+<line x1="633.1" y1="641.0" x2="599.8" y2="668.5" stroke="#5a6478" stroke-width="1" opacity="0.216"/>
+<line x1="595.5" y1="586.2" x2="522.1" y2="614.9" stroke="#5a6478" stroke-width="1" opacity="0.265"/>
+<line x1="595.5" y1="586.2" x2="599.8" y2="668.5" stroke="#5a6478" stroke-width="1" opacity="0.228"/>
+<line x1="558.8" y1="561.3" x2="614.6" y2="694.4" stroke="#5a6478" stroke-width="1" opacity="0.201"/>
+<line x1="646.3" y1="666.6" x2="566.0" y2="616.6" stroke="#5a6478" stroke-width="1" opacity="0.190"/>
+<line x1="606.6" y1="616.7" x2="689.0" y2="596.3" stroke="#5a6478" stroke-width="1" opacity="0.220"/>
+<line x1="595.5" y1="586.2" x2="708.0" y2="671.7" stroke="#5a6478" stroke-width="1" opacity="0.275"/>
+<line x1="708.0" y1="671.7" x2="599.8" y2="668.5" stroke="#5a6478" stroke-width="1" opacity="0.133"/>
+<line x1="680.4" y1="654.6" x2="708.0" y2="671.7" stroke="#5a6478" stroke-width="1" opacity="0.210"/>
+<line x1="671.7" y1="695.4" x2="723.1" y2="632.5" stroke="#5a6478" stroke-width="1" opacity="0.272"/>
+<line x1="595.5" y1="586.2" x2="547.1" y2="591.0" stroke="#5a6478" stroke-width="1" opacity="0.241"/>
+<line x1="646.3" y1="666.6" x2="599.8" y2="668.5" stroke="#5a6478" stroke-width="1" opacity="0.251"/>
+<line x1="646.3" y1="666.6" x2="547.1" y2="591.0" stroke="#5a6478" stroke-width="1" opacity="0.223"/>
+<line x1="723.1" y1="632.5" x2="547.1" y2="591.0" stroke="#5a6478" stroke-width="1" opacity="0.216"/>
+<line x1="708.0" y1="671.7" x2="633.1" y2="641.0" stroke="#5a6478" stroke-width="1" opacity="0.218"/>
+<line x1="633.1" y1="641.0" x2="689.0" y2="596.3" stroke="#5a6478" stroke-width="1" opacity="0.218"/>
+<line x1="708.0" y1="671.7" x2="614.6" y2="694.4" stroke="#5a6478" stroke-width="1" opacity="0.202"/>
+<line x1="606.6" y1="616.7" x2="566.0" y2="616.6" stroke="#5a6478" stroke-width="1" opacity="0.201"/>
+<line x1="599.8" y1="668.5" x2="641.5" y2="601.8" stroke="#5a6478" stroke-width="1" opacity="0.211"/>
+<line x1="566.0" y1="616.6" x2="599.8" y2="668.5" stroke="#5a6478" stroke-width="1" opacity="0.094"/>
+<line x1="646.3" y1="666.6" x2="590.7" y2="643.1" stroke="#5a6478" stroke-width="1" opacity="0.276"/>
+<line x1="547.1" y1="591.0" x2="641.5" y2="601.8" stroke="#5a6478" stroke-width="1" opacity="0.185"/>
+<line x1="590.7" y1="643.1" x2="680.4" y2="654.6" stroke="#5a6478" stroke-width="1" opacity="0.193"/>
+<line x1="680.4" y1="654.6" x2="547.1" y2="591.0" stroke="#5a6478" stroke-width="1" opacity="0.138"/>
+<line x1="680.4" y1="654.6" x2="606.6" y2="616.7" stroke="#5a6478" stroke-width="1" opacity="0.128"/>
+<line x1="680.4" y1="654.6" x2="599.8" y2="668.5" stroke="#5a6478" stroke-width="1" opacity="0.138"/>
+<line x1="595.5" y1="586.2" x2="680.4" y2="654.6" stroke="#5a6478" stroke-width="1" opacity="0.199"/>
+<line x1="522.1" y1="614.9" x2="547.1" y2="591.0" stroke="#5a6478" stroke-width="1" opacity="0.180"/>
+<line x1="590.7" y1="643.1" x2="547.1" y2="591.0" stroke="#5a6478" stroke-width="1" opacity="0.198"/>
+<line x1="646.3" y1="666.6" x2="488.4" y2="646.2" stroke="#5a6478" stroke-width="1" opacity="0.094"/>
+<line x1="488.4" y1="646.2" x2="590.7" y2="643.1" stroke="#5a6478" stroke-width="1" opacity="0.114"/>
+<line x1="488.4" y1="646.2" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.122"/>
+<line x1="633.1" y1="641.0" x2="547.1" y2="591.0" stroke="#5a6478" stroke-width="1" opacity="0.183"/>
+<line x1="603.0" y1="554.0" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.202"/>
+<line x1="606.6" y1="616.7" x2="671.7" y2="695.4" stroke="#5a6478" stroke-width="1" opacity="0.153"/>
+<line x1="680.4" y1="654.6" x2="641.5" y2="601.8" stroke="#5a6478" stroke-width="1" opacity="0.204"/>
+<line x1="708.0" y1="671.7" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.187"/>
+<line x1="551.8" y1="687.9" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.295"/>
+<line x1="603.0" y1="554.0" x2="546.6" y2="649.2" stroke="#5a6478" stroke-width="1" opacity="0.207"/>
+<line x1="603.0" y1="554.0" x2="595.5" y2="586.2" stroke="#5a6478" stroke-width="1" opacity="0.105"/>
+<line x1="603.0" y1="554.0" x2="652.3" y2="571.4" stroke="#5a6478" stroke-width="1" opacity="0.146"/>
+<line x1="558.8" y1="561.3" x2="652.3" y2="571.4" stroke="#5a6478" stroke-width="1" opacity="0.220"/>
+<line x1="590.7" y1="643.1" x2="671.7" y2="695.4" stroke="#5a6478" stroke-width="1" opacity="0.212"/>
+<line x1="590.7" y1="643.1" x2="522.1" y2="614.9" stroke="#5a6478" stroke-width="1" opacity="0.186"/>
+<line x1="749.2" y1="568.7" x2="723.1" y2="632.5" stroke="#5a6478" stroke-width="1" opacity="0.199"/>
+<line x1="671.7" y1="695.4" x2="633.1" y2="641.0" stroke="#5a6478" stroke-width="1" opacity="0.214"/>
+<line x1="551.8" y1="687.9" x2="723.1" y2="632.5" stroke="#5a6478" stroke-width="1" opacity="0.174"/>
+<line x1="551.8" y1="687.9" x2="689.0" y2="596.3" stroke="#5a6478" stroke-width="1" opacity="0.166"/>
+<line x1="646.3" y1="666.6" x2="708.0" y2="671.7" stroke="#5a6478" stroke-width="1" opacity="0.207"/>
+<line x1="671.7" y1="695.4" x2="689.0" y2="596.3" stroke="#5a6478" stroke-width="1" opacity="0.206"/>
+<line x1="522.1" y1="614.9" x2="671.7" y2="695.4" stroke="#5a6478" stroke-width="1" opacity="0.128"/>
+<line x1="603.0" y1="554.0" x2="723.1" y2="632.5" stroke="#5a6478" stroke-width="1" opacity="0.138"/>
+<line x1="551.8" y1="687.9" x2="614.6" y2="694.4" stroke="#5a6478" stroke-width="1" opacity="0.311"/>
+<line x1="522.1" y1="614.9" x2="599.8" y2="668.5" stroke="#5a6478" stroke-width="1" opacity="0.078"/>
+<line x1="558.8" y1="561.3" x2="522.1" y2="614.9" stroke="#5a6478" stroke-width="1" opacity="0.078"/>
+<line x1="680.4" y1="654.6" x2="671.7" y2="695.4" stroke="#5a6478" stroke-width="1" opacity="0.142"/>
+<line x1="749.2" y1="568.7" x2="614.6" y2="694.4" stroke="#5a6478" stroke-width="1" opacity="0.114"/>
+<line x1="590.7" y1="643.1" x2="551.8" y2="687.9" stroke="#5a6478" stroke-width="1" opacity="0.214"/>
+<line x1="606.6" y1="616.7" x2="633.1" y2="641.0" stroke="#5a6478" stroke-width="1" opacity="0.235"/>
+<line x1="558.8" y1="561.3" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.230"/>
+<line x1="749.2" y1="568.7" x2="652.3" y2="571.4" stroke="#5a6478" stroke-width="1" opacity="0.166"/>
+<line x1="566.0" y1="616.6" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.192"/>
+<line x1="522.1" y1="614.9" x2="633.1" y2="641.0" stroke="#5a6478" stroke-width="1" opacity="0.094"/>
+<line x1="551.8" y1="687.9" x2="641.5" y2="601.8" stroke="#5a6478" stroke-width="1" opacity="0.094"/>
+<line x1="522.1" y1="614.9" x2="723.1" y2="632.5" stroke="#5a6478" stroke-width="1" opacity="0.170"/>
+<line x1="595.5" y1="586.2" x2="671.7" y2="695.4" stroke="#5a6478" stroke-width="1" opacity="0.094"/>
+<line x1="595.5" y1="586.2" x2="551.8" y2="687.9" stroke="#5a6478" stroke-width="1" opacity="0.128"/>
+<line x1="804.0" y1="595.9" x2="652.3" y2="571.4" stroke="#5a6478" stroke-width="1" opacity="0.156"/>
+<line x1="522.1" y1="614.9" x2="566.0" y2="616.6" stroke="#5a6478" stroke-width="1" opacity="0.158"/>
+<line x1="606.6" y1="616.7" x2="599.8" y2="668.5" stroke="#5a6478" stroke-width="1" opacity="0.146"/>
+<line x1="708.0" y1="671.7" x2="606.6" y2="616.7" stroke="#5a6478" stroke-width="1" opacity="0.153"/>
+<line x1="680.4" y1="654.6" x2="566.0" y2="616.6" stroke="#5a6478" stroke-width="1" opacity="0.142"/>
+<line x1="646.3" y1="666.6" x2="749.2" y2="568.7" stroke="#5a6478" stroke-width="1" opacity="0.149"/>
+<line x1="689.0" y1="596.3" x2="711.8" y2="438.4" stroke="#5a6478" stroke-width="1" opacity="0.078"/>
+<line x1="546.6" y1="649.2" x2="471.7" y2="493.0" stroke="#5a6478" stroke-width="1" opacity="0.105"/>
+<line x1="546.6" y1="649.2" x2="830.2" y2="535.3" stroke="#5a6478" stroke-width="1" opacity="0.105"/>
+<line x1="595.5" y1="586.2" x2="804.5" y2="645.2" stroke="#5a6478" stroke-width="1" opacity="0.114"/>
+<line x1="804.5" y1="645.2" x2="546.6" y2="649.2" stroke="#5a6478" stroke-width="1" opacity="0.105"/>
+<line x1="804.5" y1="645.2" x2="723.1" y2="632.5" stroke="#5a6478" stroke-width="1" opacity="0.078"/>
+<line x1="599.8" y1="668.5" x2="547.1" y2="591.0" stroke="#5a6478" stroke-width="1" opacity="0.142"/>
+<line x1="603.0" y1="554.0" x2="606.6" y2="616.7" stroke="#5a6478" stroke-width="1" opacity="0.128"/>
+<line x1="603.0" y1="554.0" x2="614.6" y2="694.4" stroke="#5a6478" stroke-width="1" opacity="0.202"/>
+<line x1="891.5" y1="573.2" x2="723.1" y2="632.5" stroke="#5a6478" stroke-width="1" opacity="0.094"/>
+<line x1="551.8" y1="687.9" x2="633.1" y2="641.0" stroke="#5a6478" stroke-width="1" opacity="0.170"/>
+<line x1="603.0" y1="554.0" x2="590.7" y2="643.1" stroke="#5a6478" stroke-width="1" opacity="0.219"/>
+<line x1="488.4" y1="646.2" x2="595.5" y2="586.2" stroke="#5a6478" stroke-width="1" opacity="0.105"/>
+<line x1="891.5" y1="573.2" x2="641.5" y2="601.8" stroke="#5a6478" stroke-width="1" opacity="0.078"/>
+<line x1="646.3" y1="666.6" x2="551.8" y2="687.9" stroke="#5a6478" stroke-width="1" opacity="0.182"/>
+<line x1="603.0" y1="554.0" x2="547.1" y2="591.0" stroke="#5a6478" stroke-width="1" opacity="0.156"/>
+<line x1="614.6" y1="694.4" x2="487.1" y2="740.0" stroke="#5a6478" stroke-width="1" opacity="0.138"/>
+<line x1="546.6" y1="649.2" x2="487.1" y2="740.0" stroke="#5a6478" stroke-width="1" opacity="0.142"/>
+<line x1="603.0" y1="554.0" x2="689.0" y2="596.3" stroke="#5a6478" stroke-width="1" opacity="0.156"/>
+<line x1="599.8" y1="668.5" x2="487.1" y2="740.0" stroke="#5a6478" stroke-width="1" opacity="0.078"/>
+<line x1="551.8" y1="687.9" x2="671.7" y2="695.4" stroke="#5a6478" stroke-width="1" opacity="0.146"/>
+<line x1="399.6" y1="528.9" x2="614.6" y2="694.4" stroke="#5a6478" stroke-width="1" opacity="0.078"/>
+<line x1="558.8" y1="561.3" x2="590.7" y2="643.1" stroke="#5a6478" stroke-width="1" opacity="0.182"/>
+<line x1="708.0" y1="671.7" x2="671.7" y2="695.4" stroke="#5a6478" stroke-width="1" opacity="0.133"/>
+<line x1="558.8" y1="561.3" x2="566.0" y2="616.6" stroke="#5a6478" stroke-width="1" opacity="0.078"/>
+<line x1="558.8" y1="561.3" x2="723.1" y2="632.5" stroke="#5a6478" stroke-width="1" opacity="0.128"/>
+<line x1="671.7" y1="695.4" x2="599.8" y2="668.5" stroke="#5a6478" stroke-width="1" opacity="0.146"/>
+<line x1="603.0" y1="554.0" x2="551.8" y2="687.9" stroke="#5a6478" stroke-width="1" opacity="0.146"/>
+<line x1="603.0" y1="554.0" x2="641.5" y2="601.8" stroke="#5a6478" stroke-width="1" opacity="0.166"/>
+<line x1="603.0" y1="554.0" x2="566.0" y2="616.6" stroke="#5a6478" stroke-width="1" opacity="0.094"/>
+<line x1="603.0" y1="554.0" x2="522.1" y2="614.9" stroke="#5a6478" stroke-width="1" opacity="0.122"/>
+<line x1="603.0" y1="554.0" x2="599.8" y2="668.5" stroke="#5a6478" stroke-width="1" opacity="0.142"/>
+<line x1="767.3" y1="498.1" x2="723.1" y2="632.5" stroke="#5a6478" stroke-width="1" opacity="0.114"/>
+<line x1="767.3" y1="498.1" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.094"/>
+<line x1="804.0" y1="595.9" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.128"/>
+<line x1="839.5" y1="488.9" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.105"/>
+<line x1="522.1" y1="614.9" x2="708.0" y2="671.7" stroke="#5a6478" stroke-width="1" opacity="0.105"/>
+<line x1="804.0" y1="595.9" x2="614.6" y2="694.4" stroke="#5a6478" stroke-width="1" opacity="0.158"/>
+<line x1="428.2" y1="668.6" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.146"/>
+<line x1="428.2" y1="668.6" x2="590.7" y2="643.1" stroke="#5a6478" stroke-width="1" opacity="0.078"/>
+<line x1="428.2" y1="668.6" x2="546.6" y2="649.2" stroke="#5a6478" stroke-width="1" opacity="0.138"/>
+<line x1="708.0" y1="671.7" x2="547.1" y2="591.0" stroke="#5a6478" stroke-width="1" opacity="0.078"/>
+<line x1="488.4" y1="646.2" x2="652.3" y2="571.4" stroke="#5a6478" stroke-width="1" opacity="0.122"/>
+<line x1="551.8" y1="687.9" x2="546.6" y2="649.2" stroke="#5a6478" stroke-width="1" opacity="0.204"/>
+<line x1="558.8" y1="561.3" x2="546.6" y2="649.2" stroke="#5a6478" stroke-width="1" opacity="0.168"/>
+<line x1="558.8" y1="561.3" x2="633.1" y2="641.0" stroke="#5a6478" stroke-width="1" opacity="0.128"/>
+<line x1="558.8" y1="561.3" x2="641.5" y2="601.8" stroke="#5a6478" stroke-width="1" opacity="0.161"/>
+<line x1="558.8" y1="561.3" x2="595.5" y2="586.2" stroke="#5a6478" stroke-width="1" opacity="0.122"/>
+<line x1="558.8" y1="561.3" x2="606.6" y2="616.7" stroke="#5a6478" stroke-width="1" opacity="0.180"/>
+<line x1="646.3" y1="666.6" x2="671.7" y2="695.4" stroke="#5a6478" stroke-width="1" opacity="0.174"/>
+<line x1="804.5" y1="645.2" x2="614.6" y2="694.4" stroke="#5a6478" stroke-width="1" opacity="0.078"/>
+<line x1="671.7" y1="695.4" x2="641.5" y2="601.8" stroke="#5a6478" stroke-width="1" opacity="0.122"/>
+<line x1="558.8" y1="561.3" x2="680.4" y2="654.6" stroke="#5a6478" stroke-width="1" opacity="0.094"/>
+<line x1="558.8" y1="561.3" x2="547.1" y2="591.0" stroke="#5a6478" stroke-width="1" opacity="0.133"/>
+<line x1="488.4" y1="646.2" x2="599.8" y2="668.5" stroke="#5a6478" stroke-width="1" opacity="0.078"/>
+<line x1="835.9" y1="699.5" x2="614.6" y2="694.4" stroke="#5a6478" stroke-width="1" opacity="0.138"/>
+<line x1="835.9" y1="699.5" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.114"/>
+<line x1="566.0" y1="616.6" x2="689.0" y2="596.3" stroke="#5a6478" stroke-width="1" opacity="0.161"/>
+<line x1="761.3" y1="722.4" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.284"/>
+<line x1="761.3" y1="722.4" x2="599.8" y2="668.5" stroke="#5a6478" stroke-width="1" opacity="0.149"/>
+<line x1="415.6" y1="604.2" x2="546.6" y2="649.2" stroke="#5a6478" stroke-width="1" opacity="0.105"/>
+<line x1="415.6" y1="604.2" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.094"/>
+<line x1="415.6" y1="604.2" x2="614.6" y2="694.4" stroke="#5a6478" stroke-width="1" opacity="0.105"/>
+<line x1="551.8" y1="687.9" x2="606.6" y2="616.7" stroke="#5a6478" stroke-width="1" opacity="0.196"/>
+<line x1="551.8" y1="687.9" x2="599.8" y2="668.5" stroke="#5a6478" stroke-width="1" opacity="0.209"/>
+<line x1="749.2" y1="568.7" x2="641.5" y2="601.8" stroke="#5a6478" stroke-width="1" opacity="0.094"/>
+<line x1="488.4" y1="646.2" x2="633.1" y2="641.0" stroke="#5a6478" stroke-width="1" opacity="0.094"/>
+<line x1="804.5" y1="645.2" x2="689.0" y2="596.3" stroke="#5a6478" stroke-width="1" opacity="0.094"/>
+<line x1="590.7" y1="643.1" x2="749.2" y2="568.7" stroke="#5a6478" stroke-width="1" opacity="0.078"/>
+<line x1="671.7" y1="695.4" x2="566.0" y2="616.6" stroke="#5a6478" stroke-width="1" opacity="0.078"/>
+<line x1="761.3" y1="722.4" x2="551.8" y2="687.9" stroke="#5a6478" stroke-width="1" opacity="0.094"/>
+<line x1="761.3" y1="722.4" x2="723.1" y2="632.5" stroke="#5a6478" stroke-width="1" opacity="0.133"/>
+<line x1="646.3" y1="666.6" x2="761.3" y2="722.4" stroke="#5a6478" stroke-width="1" opacity="0.138"/>
+<line x1="522.1" y1="614.9" x2="551.8" y2="687.9" stroke="#5a6478" stroke-width="1" opacity="0.114"/>
+<line x1="551.8" y1="687.9" x2="547.1" y2="591.0" stroke="#5a6478" stroke-width="1" opacity="0.161"/>
+<line x1="761.3" y1="722.4" x2="689.0" y2="596.3" stroke="#5a6478" stroke-width="1" opacity="0.094"/>
+<line x1="488.4" y1="646.2" x2="723.1" y2="632.5" stroke="#5a6478" stroke-width="1" opacity="0.094"/>
+<line x1="603.0" y1="554.0" x2="633.1" y2="641.0" stroke="#5a6478" stroke-width="1" opacity="0.078"/>
+<line x1="633.1" y1="641.0" x2="804.5" y2="645.2" stroke="#5a6478" stroke-width="1" opacity="0.094"/>
+<line x1="680.4" y1="654.6" x2="522.1" y2="614.9" stroke="#5a6478" stroke-width="1" opacity="0.094"/>
+<line x1="671.7" y1="695.4" x2="804.5" y2="645.2" stroke="#5a6478" stroke-width="1" opacity="0.078"/>
+<line x1="804.5" y1="645.2" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.078"/>
+<line x1="585.0" y1="794.7" x2="614.6" y2="694.4" stroke="#5a6478" stroke-width="1" opacity="0.138"/>
+<line x1="672.0" y1="488.4" x2="652.3" y2="571.4" stroke="#5a6478" stroke-width="1" opacity="0.156"/>
+<line x1="672.0" y1="488.4" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.138"/>
+<line x1="488.4" y1="646.2" x2="614.6" y2="694.4" stroke="#5a6478" stroke-width="1" opacity="0.122"/>
+<line x1="488.4" y1="646.2" x2="547.1" y2="591.0" stroke="#5a6478" stroke-width="1" opacity="0.078"/>
+<line x1="695.8" y1="753.2" x2="723.1" y2="632.5" stroke="#5a6478" stroke-width="1" opacity="0.133"/>
+<line x1="606.6" y1="616.7" x2="749.2" y2="568.7" stroke="#5a6478" stroke-width="1" opacity="0.114"/>
+<line x1="801.5" y1="783.5" x2="614.6" y2="694.4" stroke="#5a6478" stroke-width="1" opacity="0.094"/>
+<line x1="558.8" y1="561.3" x2="671.7" y2="695.4" stroke="#5a6478" stroke-width="1" opacity="0.094"/>
+<line x1="912.6" y1="636.1" x2="723.1" y2="632.5" stroke="#5a6478" stroke-width="1" opacity="0.105"/>
+<line x1="646.3" y1="666.6" x2="695.8" y2="753.2" stroke="#5a6478" stroke-width="1" opacity="0.114"/>
+<line x1="695.8" y1="753.2" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.078"/>
+<line x1="695.8" y1="753.2" x2="652.3" y2="571.4" stroke="#5a6478" stroke-width="1" opacity="0.078"/>
+<line x1="590.7" y1="643.1" x2="695.8" y2="753.2" stroke="#5a6478" stroke-width="1" opacity="0.078"/>
+<line x1="558.8" y1="561.3" x2="551.8" y2="687.9" stroke="#5a6478" stroke-width="1" opacity="0.105"/>
+<line x1="749.2" y1="568.7" x2="672.7" y2="626.5" stroke="#5a6478" stroke-width="1" opacity="0.114"/>
+<circle cx="599.8" cy="668.5" r="20.3" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Euclidean Number Theory (755 concepts)</title></circle>
+<text x="599.8" y="668.5" font-size="8.0" fill="#eef0f4" text-anchor="middle" dominant-baseline="middle" opacity="0.9">Euclidean Number Theory</text>
+<circle cx="652.3" cy="571.4" r="49.1" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Polynomial Theory (6250 concepts)</title></circle>
+<text x="652.3" y="571.4" font-size="15.0" fill="#eef0f4" text-anchor="middle" dominant-baseline="middle" opacity="0.9">Polynomial Theory</text>
+<circle cx="723.1" cy="632.5" r="52.0" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Sine Function (7098 concepts)</title></circle>
+<text x="723.1" y="632.5" font-size="15.0" fill="#eef0f4" text-anchor="middle" dominant-baseline="middle" opacity="0.9">Sine Function</text>
+<circle cx="614.6" cy="694.4" r="55.0" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Circles (8038 concepts)</title></circle>
+<text x="614.6" y="694.4" font-size="15.0" fill="#eef0f4" text-anchor="middle" dominant-baseline="middle" opacity="0.9">Circles</text>
+<circle cx="514.5" cy="261.1" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Conjunction (1 concepts)</title></circle>
+<circle cx="421.0" cy="119.1" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Fallacies and Mistakes (1 concepts)</title></circle>
+<circle cx="547.1" cy="591.0" r="21.3" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Graph Theory (859 concepts)</title></circle>
+<text x="547.1" y="591.0" font-size="8.0" fill="#eef0f4" text-anchor="middle" dominant-baseline="middle" opacity="0.9">Graph Theory</text>
+<circle cx="995.1" cy="549.2" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Miscellanea (1 concepts)</title></circle>
+<circle cx="467.7" cy="348.0" r="5.8" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Schools (2 concepts)</title></circle>
+<circle cx="580.7" cy="284.1" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Theorem cluster (1 concepts)</title></circle>
+<circle cx="546.6" cy="649.2" r="50.8" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Order Theory (6735 concepts)</title></circle>
+<text x="546.6" y="649.2" font-size="15.0" fill="#eef0f4" text-anchor="middle" dominant-baseline="middle" opacity="0.9">Order Theory</text>
+<circle cx="641.5" cy="601.8" r="37.9" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Linear Transformations (3474 concepts)</title></circle>
+<text x="641.5" y="601.8" font-size="12.1" fill="#eef0f4" text-anchor="middle" dominant-baseline="middle" opacity="0.9">Linear Transformations</text>
+<circle cx="1084.6" cy="448.6" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Theorem cluster (1 concepts)</title></circle>
+<circle cx="1104.0" cy="711.3" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Personality Types (1 concepts)</title></circle>
+<circle cx="730.2" cy="302.5" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Theorem cluster (1 concepts)</title></circle>
+<circle cx="349.9" cy="215.1" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Product Spaces (1 concepts)</title></circle>
+<circle cx="689.0" cy="596.3" r="35.5" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Truth Table Proofs (3000 concepts)</title></circle>
+<text x="689.0" y="596.3" font-size="11.4" fill="#eef0f4" text-anchor="middle" dominant-baseline="middle" opacity="0.9">Truth Table Proofs</text>
+<circle cx="471.7" cy="493.0" r="6.4" fill="#9085e9" fill-opacity="0.55" stroke="#9085e9" stroke-width="1.2"><title>Rule of Transposition (6 concepts)</title></circle>
+<circle cx="711.8" cy="438.4" r="6.2" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Conditional is Left Distributive over Disjunction (5 concepts)</title></circle>
+<circle cx="830.2" cy="535.3" r="6.4" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Rule of Transposition (6 concepts)</title></circle>
+<circle cx="487.1" cy="740.0" r="7.0" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Rubik's Cube (13 concepts)</title></circle>
+<circle cx="411.8" cy="178.5" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Theorem cluster (1 concepts)</title></circle>
+<circle cx="672.7" cy="626.5" r="52.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (7292 concepts)</title></circle>
+<text x="672.7" y="626.5" font-size="15.0" fill="#eef0f4" text-anchor="middle" dominant-baseline="middle" opacity="0.9">Specific Numbers</text>
+<circle cx="1073.4" cy="770.2" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Sine Function (1 concepts)</title></circle>
+<circle cx="1128.9" cy="405.3" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Cosine Function (1 concepts)</title></circle>
+<circle cx="503.3" cy="423.0" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Primitives involving Power of x plus or minus Power of a (1 concepts)</title></circle>
+<circle cx="1296.1" cy="615.6" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Primitives involving Power of x plus or minus Power of a (1 concepts)</title></circle>
+<circle cx="1251.9" cy="676.2" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Primitives involving Power of x plus or minus Power of a (1 concepts)</title></circle>
+<circle cx="789.9" cy="278.9" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Proportion (1 concepts)</title></circle>
+<circle cx="551.8" cy="216.3" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definition cluster (1 concepts)</title></circle>
+<circle cx="890.6" cy="107.3" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Real Numbers (1 concepts)</title></circle>
+<circle cx="740.3" cy="109.2" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Paradoxes (1 concepts)</title></circle>
+<circle cx="399.6" cy="528.9" r="6.5" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Heart Curves (7 concepts)</title></circle>
+<circle cx="1080.5" cy="551.3" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Solutions to Differential Equations (1 concepts)</title></circle>
+<circle cx="247.0" cy="686.6" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Historical Notes (1 concepts)</title></circle>
+<circle cx="376.9" cy="312.5" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Historical Notes (1 concepts)</title></circle>
+<circle cx="778.0" cy="411.6" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Numbers (1 concepts)</title></circle>
+<circle cx="299.9" cy="257.7" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Summations (1 concepts)</title></circle>
+<circle cx="603.0" cy="554.0" r="14.5" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Game Theory (289 concepts)</title></circle>
+<text x="603.0" y="554.0" font-size="8.0" fill="#eef0f4" text-anchor="middle" dominant-baseline="middle" opacity="0.9">Definitions/Game Theory</text>
+<circle cx="127.0" cy="305.6" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Combinatorics (1 concepts)</title></circle>
+<circle cx="767.3" cy="498.1" r="8.0" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Pandigital Fractions (28 concepts)</title></circle>
+<circle cx="839.5" cy="488.9" r="6.4" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Power of 2 is Difference between Two Powers (6 concepts)</title></circle>
+<circle cx="648.0" cy="922.4" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="297.7" cy="590.4" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="1054.9" cy="506.0" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="937.4" cy="751.3" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="305.2" cy="645.3" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="283.1" cy="741.3" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="352.3" cy="407.9" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="250.0" cy="475.8" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="983.3" cy="601.8" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="963.2" cy="372.5" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Fair Cake-Cutting (1 concepts)</title></circle>
+<circle cx="819.3" cy="881.9" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="907.6" cy="326.9" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="569.9" cy="158.5" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="391.4" cy="263.3" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="992.8" cy="794.8" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="699.7" cy="250.8" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="1159.7" cy="781.6" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="141.7" cy="702.3" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="824.3" cy="324.0" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="454.2" cy="228.7" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="535.5" cy="374.4" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="837.8" cy="230.2" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="634.2" cy="191.5" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="772.2" cy="160.6" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="922.0" cy="465.8" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="709.7" cy="880.1" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="486.9" cy="814.5" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Recreational Mathematics (1 concepts)</title></circle>
+<circle cx="953.3" cy="699.1" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Mistakes/Curious and Interesting Numbers (1 concepts)</title></circle>
+<circle cx="802.9" cy="834.5" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="886.6" cy="374.4" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Recreational Mathematics (1 concepts)</title></circle>
+<circle cx="1098.8" cy="348.4" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Mistakes/Curious and Interesting Numbers (1 concepts)</title></circle>
+<circle cx="334.6" cy="859.7" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="493.3" cy="174.4" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Square Numbers (1 concepts)</title></circle>
+<circle cx="196.7" cy="747.6" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Square Numbers (1 concepts)</title></circle>
+<circle cx="1178.9" cy="347.9" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="288.8" cy="432.3" r="5.8" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Recreational Mathematics (2 concepts)</title></circle>
+<circle cx="528.4" cy="865.2" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Mistakes/Curious and Interesting Numbers (1 concepts)</title></circle>
+<circle cx="554.1" cy="922.0" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="428.2" cy="668.6" r="7.3" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Pea Patterns (17 concepts)</title></circle>
+<circle cx="1077.9" cy="655.0" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Prime Numbers (1 concepts)</title></circle>
+<circle cx="401.6" cy="363.9" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="843.3" cy="170.3" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Mistakes/Fourier Series/Sneddon (1 concepts)</title></circle>
+<circle cx="122.4" cy="645.2" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Examples of Definite Integrals (1 concepts)</title></circle>
+<circle cx="416.0" cy="838.0" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="646.3" cy="666.6" r="28.7" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Binomial Coefficients (1807 concepts)</title></circle>
+<text x="646.3" y="666.6" font-size="9.2" fill="#eef0f4" text-anchor="middle" dominant-baseline="middle" opacity="0.9">Binomial Coefficients</text>
+<circle cx="488.4" cy="646.2" r="7.4" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Mistakes (19 concepts)</title></circle>
+<circle cx="850.2" cy="427.8" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Topology (1 concepts)</title></circle>
+<circle cx="891.5" cy="573.2" r="6.4" fill="#9085e9" fill-opacity="0.55" stroke="#9085e9" stroke-width="1.2"><title>0.999...=1 (6 concepts)</title></circle>
+<circle cx="1207.0" cy="612.0" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="558.8" cy="561.3" r="13.0" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Examples of Linear Codes (208 concepts)</title></circle>
+<text x="558.8" y="561.3" font-size="8.0" fill="#eef0f4" text-anchor="middle" dominant-baseline="middle" opacity="0.9">Examples of Linear Codes</text>
+<circle cx="929.5" cy="156.5" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Probability Theory (1 concepts)</title></circle>
+<circle cx="601.9" cy="339.9" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Measure Theory (1 concepts)</title></circle>
+<circle cx="1133.1" cy="491.6" r="5.8" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Kochen-Stone Theorem (2 concepts)</title></circle>
+<circle cx="590.7" cy="643.1" r="32.3" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Probability Theory (2390 concepts)</title></circle>
+<text x="590.7" y="643.1" font-size="10.3" fill="#eef0f4" text-anchor="middle" dominant-baseline="middle" opacity="0.9">Definitions/Probability Theory</text>
+<circle cx="1054.7" cy="600.0" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Navigation (1 concepts)</title></circle>
+<circle cx="248.8" cy="528.5" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Analytic Number Theory (1 concepts)</title></circle>
+<circle cx="1218.5" cy="504.5" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Gaussian Integers (1 concepts)</title></circle>
+<circle cx="817.3" cy="371.8" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Central Binomial Coefficients (1 concepts)</title></circle>
+<circle cx="835.9" cy="699.5" r="6.8" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Rhodonea Curves (11 concepts)</title></circle>
+<circle cx="767.0" cy="227.5" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="507.6" cy="102.5" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Theorem cluster (1 concepts)</title></circle>
+<circle cx="152.9" cy="445.4" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Theorem cluster (1 concepts)</title></circle>
+<circle cx="615.2" cy="855.9" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Theorem cluster (1 concepts)</title></circle>
+<circle cx="653.0" cy="293.6" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Theorem cluster (1 concepts)</title></circle>
+<circle cx="677.1" cy="341.2" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Theorem cluster (1 concepts)</title></circle>
+<circle cx="404.2" cy="451.5" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Theorem cluster (1 concepts)</title></circle>
+<circle cx="89.5" cy="594.8" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="1301.6" cy="413.6" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="908.1" cy="209.5" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="703.7" cy="829.7" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="688.9" cy="389.7" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Mistakes/The Concise Oxford Dictionary of Mathematics (1 concepts)</title></circle>
+<circle cx="761.3" cy="722.4" r="24.9" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Four Fours/Lemmata/Three Fours (1267 concepts)</title></circle>
+<text x="761.3" y="722.4" font-size="8.0" fill="#eef0f4" text-anchor="middle" dominant-baseline="middle" opacity="0.9">Four Fours/Lemmata/Three Fours</text>
+<circle cx="595.5" cy="586.2" r="44.3" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Metric Spaces (4978 concepts)</title></circle>
+<text x="595.5" y="586.2" font-size="14.2" fill="#eef0f4" text-anchor="middle" dominant-baseline="middle" opacity="0.9">Metric Spaces</text>
+<circle cx="997.1" cy="196.8" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Classic Problems (1 concepts)</title></circle>
+<circle cx="327.8" cy="795.0" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="415.6" cy="604.2" r="6.8" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Mahaviracharya/Ganita Sara Samgraha (10 concepts)</title></circle>
+<circle cx="201.5" cy="261.7" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Zhang Qiujian Suanjing (1 concepts)</title></circle>
+<circle cx="1157.8" cy="547.2" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Classic Problems (1 concepts)</title></circle>
+<circle cx="669.1" cy="70.0" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Classic Problems (1 concepts)</title></circle>
+<circle cx="326.6" cy="354.2" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Classic Problems (1 concepts)</title></circle>
+<circle cx="812.8" cy="83.7" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Classic Problems (1 concepts)</title></circle>
+<circle cx="164.5" cy="553.0" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Classic Problems (1 concepts)</title></circle>
+<circle cx="1051.2" cy="392.0" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Classic Problems (1 concepts)</title></circle>
+<circle cx="241.6" cy="806.9" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Classic Problems (1 concepts)</title></circle>
+<circle cx="1330.0" cy="534.0" r="6.1" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Josephus Problem (4 concepts)</title></circle>
+<circle cx="1291.2" cy="472.0" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Classic Problems (1 concepts)</title></circle>
+<circle cx="868.5" cy="280.9" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Classic Problems (1 concepts)</title></circle>
+<circle cx="710.9" cy="193.6" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Physics (1 concepts)</title></circle>
+<circle cx="337.1" cy="478.6" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Physics (1 concepts)</title></circle>
+<circle cx="1018.0" cy="341.9" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Physics (1 concepts)</title></circle>
+<circle cx="1212.7" cy="400.3" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Physics (1 concepts)</title></circle>
+<circle cx="1190.7" cy="451.3" r="5.8" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Mistakes/Unsolved Problems in Number Theory (2 concepts)</title></circle>
+<circle cx="1131.9" cy="604.5" r="6.0" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>100 using Four 9s (3 concepts)</title></circle>
+<circle cx="77.1" cy="406.9" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Liquid Pouring Problems (1 concepts)</title></circle>
+<circle cx="1159.2" cy="664.5" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Geography Puzzles (1 concepts)</title></circle>
+<circle cx="680.4" cy="654.6" r="15.0" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Primitive Recursive Functions (323 concepts)</title></circle>
+<text x="680.4" y="654.6" font-size="8.0" fill="#eef0f4" text-anchor="middle" dominant-baseline="middle" opacity="0.9">Primitive Recursive Functions</text>
+<circle cx="456.9" cy="295.1" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Game Theory (1 concepts)</title></circle>
+<circle cx="1074.1" cy="833.4" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Examples of Partial Derivatives (1 concepts)</title></circle>
+<circle cx="210.5" cy="413.0" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Classic Riddles (1 concepts)</title></circle>
+<circle cx="211.2" cy="329.2" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Veridical Paradoxes (1 concepts)</title></circle>
+<circle cx="522.1" cy="614.9" r="21.0" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Category Theory (819 concepts)</title></circle>
+<text x="522.1" y="614.9" font-size="8.0" fill="#eef0f4" text-anchor="middle" dominant-baseline="middle" opacity="0.9">Definitions/Category Theory</text>
+<circle cx="708.0" cy="671.7" r="22.0" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Measure Theory (931 concepts)</title></circle>
+<text x="708.0" y="671.7" font-size="8.0" fill="#eef0f4" text-anchor="middle" dominant-baseline="middle" opacity="0.9">Measure Theory</text>
+<circle cx="551.8" cy="687.9" r="24.7" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Henry Ernest Dudeney/Puzzles and Curious Problems (1245 concepts)</title></circle>
+<text x="551.8" y="687.9" font-size="8.0" fill="#eef0f4" text-anchor="middle" dominant-baseline="middle" opacity="0.9">Henry Ernest Dudeney/Puzzles and Curious Problems</text>
+<circle cx="1005.2" cy="660.5" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="606.6" cy="616.7" r="24.4" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Determinants (1210 concepts)</title></circle>
+<text x="606.6" y="616.7" font-size="8.0" fill="#eef0f4" text-anchor="middle" dominant-baseline="middle" opacity="0.9">Determinants</text>
+<circle cx="668.3" cy="139.7" r="5.8" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Specific Numbers (2 concepts)</title></circle>
+<circle cx="912.6" cy="636.1" r="6.2" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Examples of Use of Ramanujan's Arctangent Sum (5 concepts)</title></circle>
+<circle cx="444.7" cy="898.5" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Complexity Theory (1 concepts)</title></circle>
+<circle cx="749.2" cy="568.7" r="9.2" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Examples of Partial Fractions Expansions (58 concepts)</title></circle>
+<circle cx="593.1" cy="102.0" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="530.5" cy="320.6" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="260.1" cy="375.2" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Algebraic Geometry (1 concepts)</title></circle>
+<circle cx="1196.5" cy="725.4" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definition cluster (1 concepts)</title></circle>
+<circle cx="913.6" cy="849.1" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Differential Geometry (1 concepts)</title></circle>
+<circle cx="342.4" cy="709.6" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Number Theory (1 concepts)</title></circle>
+<circle cx="243.2" cy="203.8" r="5.8" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Stacks (2 concepts)</title></circle>
+<circle cx="750.4" cy="353.7" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Stacks (1 concepts)</title></circle>
+<circle cx="891.7" cy="913.8" r="5.8" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Differential Topology (2 concepts)</title></circle>
+<circle cx="1024.3" cy="724.6" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Stacks (1 concepts)</title></circle>
+<circle cx="438.9" cy="406.8" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Representation Theory of Lie Groups (1 concepts)</title></circle>
+<circle cx="577.2" cy="429.1" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Order Theory (1 concepts)</title></circle>
+<circle cx="1182.2" cy="228.6" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definition cluster (1 concepts)</title></circle>
+<circle cx="1013.5" cy="249.5" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Strange Family Problems (1 concepts)</title></circle>
+<circle cx="671.7" cy="695.4" r="17.7" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Symbols/A (518 concepts)</title></circle>
+<text x="671.7" y="695.4" font-size="8.0" fill="#eef0f4" text-anchor="middle" dominant-baseline="middle" opacity="0.9">Symbols/A</text>
+<circle cx="585.0" cy="794.7" r="6.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Definitions/Developable Surfaces (8 concepts)</title></circle>
+<circle cx="672.0" cy="488.4" r="7.4" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Examples of Modulo Polynomial Division (19 concepts)</title></circle>
+<circle cx="633.1" cy="641.0" r="26.9" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Complex Analysis (1537 concepts)</title></circle>
+<text x="633.1" y="641.0" font-size="8.6" fill="#eef0f4" text-anchor="middle" dominant-baseline="middle" opacity="0.9">Complex Analysis</text>
+<circle cx="994.0" cy="866.9" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Linear Algebra (1 concepts)</title></circle>
+<circle cx="1230.4" cy="289.6" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Miscellanea (1 concepts)</title></circle>
+<circle cx="144.1" cy="369.0" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Historical Content (1 concepts)</title></circle>
+<circle cx="70.0" cy="475.6" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Theorem cluster (1 concepts)</title></circle>
+<circle cx="804.5" cy="645.2" r="8.3" fill="#008300" fill-opacity="0.55" stroke="#008300" stroke-width="1.2"><title>Symbols/Fonts (36 concepts)</title></circle>
+<circle cx="971.3" cy="302.0" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Normal Deviates (1 concepts)</title></circle>
+<circle cx="801.5" cy="783.5" r="6.4" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Examples of Percentage Decrease (6 concepts)</title></circle>
+<circle cx="1243.9" cy="559.2" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Theorem cluster (1 concepts)</title></circle>
+<circle cx="208.6" cy="639.1" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Statistical Control (1 concepts)</title></circle>
+<circle cx="616.6" cy="390.0" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Pentagonal Numbers (1 concepts)</title></circle>
+<circle cx="566.0" cy="616.6" r="20.0" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Riemannian Geometry (725 concepts)</title></circle>
+<text x="566.0" y="616.6" font-size="8.0" fill="#eef0f4" text-anchor="middle" dominant-baseline="middle" opacity="0.9">Definitions/Riemannian Geometry</text>
+<circle cx="623.4" cy="241.5" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="319.8" cy="153.6" r="5.8" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Continued Fractions (2 concepts)</title></circle>
+<circle cx="1139.4" cy="292.7" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Continued Fractions (1 concepts)</title></circle>
+<circle cx="949.3" cy="511.8" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="218.8" cy="587.6" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Mistakes/The Concise Oxford Dictionary of Mathematics (1 concepts)</title></circle>
+<circle cx="396.3" cy="771.6" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Mistakes/Mathematical Handbook of Formulas and Tables (1 concepts)</title></circle>
+<circle cx="1086.8" cy="173.5" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Mistakes/Mathematical Handbook of Formulas and Tables (1 concepts)</title></circle>
+<circle cx="695.8" cy="753.2" r="7.2" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Examples of Laguerre Polynomials (16 concepts)</title></circle>
+<circle cx="1005.9" cy="472.6" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Theorem cluster (1 concepts)</title></circle>
+<circle cx="170.7" cy="497.7" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Theorem cluster (1 concepts)</title></circle>
+<circle cx="926.0" cy="417.9" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Theorem cluster (1 concepts)</title></circle>
+<circle cx="896.3" cy="797.1" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definition cluster (1 concepts)</title></circle>
+<circle cx="758.8" cy="930.0" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Bar Coding (1 concepts)</title></circle>
+<circle cx="1058.5" cy="294.5" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Biometrics (1 concepts)</title></circle>
+<circle cx="77.6" cy="535.4" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Break-Even Points (1 concepts)</title></circle>
+<circle cx="933.9" cy="256.9" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Cube Roots (1 concepts)</title></circle>
+<circle cx="285.6" cy="307.3" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Cyclotomic Equation (1 concepts)</title></circle>
+<circle cx="320.7" cy="536.8" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Mistakes/The Concise Oxford Dictionary of Mathematics (1 concepts)</title></circle>
+<circle cx="1000.6" cy="425.3" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definitions/Epidemiology (1 concepts)</title></circle>
+<circle cx="1008.0" cy="128.7" r="5.6" fill="#199e70" fill-opacity="0.55" stroke="#199e70" stroke-width="1.2"><title>Definition cluster (1 concepts)</title></circle>
+<circle cx="804.0" cy="595.9" r="7.1" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Definitions/Friezes (14 concepts)</title></circle>
+<circle cx="1274.4" cy="348.8" r="5.6" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Specific Numbers (1 concepts)</title></circle>
+<circle cx="1097.0" cy="232.9" r="6.1" fill="#3987e5" fill-opacity="0.55" stroke="#3987e5" stroke-width="1.2"><title>Negation implies Negation of Conjunction (4 concepts)</title></circle>
+</svg>
+</div>
+
+<div class="legend">
+  <div class="item"><span class="swatch" style="background:#3987e5"></span> Theorem</div>
+  <div class="item"><span class="swatch" style="background:#199e70"></span> Definition</div>
+  <div class="item"><span class="swatch" style="background:#c98500"></span> Axiom</div>
+  <div class="item"><span class="swatch" style="background:#008300"></span> Symbol</div>
+  <div class="item"><span class="swatch" style="background:#9085e9"></span> Proof</div>
+</div>
+
+<div class="note">
+  <b>This is a static, non-interactive preview</b> -- a sanity check on the layout approach before
+  building the full explorer. In the real version: click a bubble to zoom in and force-simulate just its
+  members locally (the "microscope" idea), search to jump straight to a theorem, and drag/filter/tune
+  physics live. Only 43 of these 203 top-level clusters have any direct link to another top-level cluster
+  (the rest are fully separate communities) -- Louvain's whole point is minimizing cross-cluster edges, so
+  a sparse, spread-out top layer like this is the expected shape of a good clustering, not a data gap.
+</div>

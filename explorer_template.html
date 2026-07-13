@@ -1,0 +1,1831 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ProofWiki Concept Explorer</title>
+<style>
+  :root {
+    --bg: #0a0d12;
+    --panel: #131822;
+    --panel-2: #1a212e;
+    --border: rgba(255,255,255,0.08);
+    --text: #eef0f4;
+    --text-muted: #8b93a7;
+    --accent: #d9a441;
+    --accent-dim: rgba(217,164,65,0.15);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%; overflow: hidden;
+    background: var(--bg); color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  #app { position: relative; width: 100vw; height: 100vh; }
+  #stage { position: absolute; inset: 0; display: block; cursor: grab; }
+  #stage.dragging { cursor: grabbing; }
+
+  #topbar {
+    /* right: 262px reserves the sidebar's own column (230px + margin) so
+       the search box and its dropdown never sit in the same corner as the
+       physics/legend panel underneath -- they used to be stacked directly
+       on top of each other there. */
+    position: absolute; top: 0; left: 0; right: 262px; z-index: 10;
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 16px;
+    background: linear-gradient(to bottom, rgba(10,13,18,0.92), rgba(10,13,18,0));
+    pointer-events: none;
+  }
+  #topbar > * { pointer-events: auto; }
+  #title {
+    font-size: 0.95rem; font-weight: 600; color: var(--text);
+    white-space: nowrap;
+  }
+  #title .accent { color: var(--accent); }
+  #breadcrumb {
+    display: flex; align-items: center; gap: 6px; flex-wrap: nowrap;
+    overflow-x: auto; min-width: 0;
+    font-size: 0.82rem; color: var(--text-muted);
+  }
+  #breadcrumb button { flex-shrink: 0; }
+  #breadcrumb button {
+    background: none; border: none; color: var(--text-muted);
+    font-size: 0.82rem; cursor: pointer; padding: 3px 7px; border-radius: 4px;
+    font-family: inherit;
+  }
+  #breadcrumb button:hover { background: var(--panel-2); color: var(--text); }
+  #breadcrumb button.current { color: var(--accent); font-weight: 600; }
+  #breadcrumb .sep { color: rgba(255,255,255,0.2); }
+
+  #search-wrap { position: relative; margin-left: auto; }
+  #search {
+    width: 260px; background: var(--panel); border: 1px solid var(--border);
+    color: var(--text); border-radius: 6px; padding: 7px 10px; font-size: 0.85rem;
+    font-family: inherit; outline: none;
+  }
+  #search:focus { border-color: var(--accent); }
+  #search-results {
+    position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 6px;
+    max-height: 320px; overflow-y: auto; display: none; z-index: 20;
+  }
+  #search-results.open { display: block; }
+  .search-item {
+    padding: 7px 10px; font-size: 0.8rem; cursor: pointer;
+    display: flex; justify-content: space-between; gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .search-item:last-child { border-bottom: none; }
+  .search-item:hover { background: var(--panel-2); }
+  .search-item .t { color: var(--text-muted); font-size: 0.72rem; flex-shrink: 0; }
+
+  #refpanel {
+    position: absolute; top: 56px; left: 12px; z-index: 10;
+    width: 250px; max-height: calc(100vh - 80px); overflow-y: auto;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+    padding: 14px; font-size: 0.78rem;
+  }
+  #refpanel h3 {
+    margin: 0 0 2px; font-size: 0.7rem; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); font-weight: 600;
+    display: flex; justify-content: space-between;
+  }
+  #refpanel h3 .n { color: var(--text); font-family: ui-monospace, monospace; }
+  .ref-sublabel { font-size: 0.68rem; color: var(--text-muted); margin-bottom: 10px; font-style: italic; }
+
+  /* Real nested <ul>/<li> tree (one <ul class="rl-children"> per expanded
+     group, same structural pattern jstree/js-treeview/VS Code's own explorer
+     use) -- indentation is just this padding-left compounding through
+     however many levels deep the DOM actually nests, no JS depth*N math.
+     #refpanel-list's <li>s inherit generic .ctx-list li styling (padding,
+     border-bottom) from the shared rule below; neutralize it here since
+     every visual concern for this particular list lives on .rl-row instead. */
+  #refpanel-list li { padding: 0; border-bottom: none; }
+  #refpanel-list ul.rl-children { list-style: none; margin: 0; padding-left: 16px; }
+  #refpanel-list ul.rl-children.collapsed { display: none; }
+  #refpanel-list .rl-row {
+    display: flex; align-items: center; gap: 6px; padding: 4px 0; cursor: pointer;
+    border-bottom: 1px solid var(--border);
+  }
+  #refpanel-list .rl-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #refpanel-list .rl-row.rl-virtual { color: var(--text-muted); }
+  #refpanel-list .rl-count {
+    color: var(--text-muted); font-family: ui-monospace, monospace; font-size: 0.68rem;
+    flex-shrink: 0; min-width: 2em; text-align: right;
+  }
+  #refpanel-list .rl-row.hoverlink { background: var(--accent-dim); }
+  #refpanel-list .rl-row.dimmed { opacity: 0.4; }
+  #refpanel-list .rl-row.visited .rl-name { color: var(--text); }
+  #refpanel-list .rl-row.visited .rl-name::before {
+    content: ""; display: inline-block; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent); opacity: 0.6; margin-right: 5px;
+  }
+  .rl-toggle {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 16px; height: 16px; flex-shrink: 0; margin-right: 2px;
+    color: var(--accent); border-radius: 3px; font-size: 0.85em;
+  }
+  .rl-toggle:hover { background: var(--accent-dim); }
+  .rl-note { color: #f2545b; }
+
+  #sidebar {
+    position: absolute; top: 56px; right: 12px; z-index: 10;
+    width: 230px; max-height: calc(100vh - 80px); overflow-y: auto;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+    padding: 14px; font-size: 0.78rem;
+  }
+  #sidebar h3 {
+    margin: 0 0 8px; font-size: 0.7rem; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); font-weight: 600;
+  }
+  #sidebar section { margin-bottom: 16px; }
+  #sidebar section:last-child { margin-bottom: 0; }
+  .legend-item {
+    display: flex; align-items: center; gap: 7px; padding: 3px 0; cursor: pointer;
+    user-select: none;
+  }
+  .legend-item.off { opacity: 0.35; }
+  .swatch { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .legend-count { margin-left: auto; color: var(--text-muted); font-variant-numeric: tabular-nums; font-family: ui-monospace, monospace; font-size: 0.7rem; }
+
+  .slider-row { margin-bottom: 10px; }
+  .slider-row label {
+    display: flex; justify-content: space-between; margin-bottom: 3px; color: var(--text-muted);
+  }
+  .slider-row output { color: var(--text); font-family: ui-monospace, monospace; }
+  .slider-row input[type=range] { width: 100%; accent-color: var(--accent); }
+
+  #detail-panel { display: none; }
+  #detail-panel.open { display: block; }
+  #detail-title { font-size: 0.88rem; font-weight: 600; margin-bottom: 4px; line-height: 1.3; }
+  #detail-type { color: var(--accent); font-size: 0.72rem; margin-bottom: 10px; }
+  #detail-link {
+    display: inline-block; margin-bottom: 12px; color: var(--accent); text-decoration: none;
+    font-size: 0.76rem; border: 1px solid var(--border); padding: 4px 8px; border-radius: 4px;
+  }
+  #detail-link:hover { border-color: var(--accent); }
+  .ctx-group { margin-bottom: 14px; }
+  .ctx-group-title {
+    font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--text-muted); margin-bottom: 5px; display: flex; justify-content: space-between;
+  }
+  .ctx-group-title .n { font-family: ui-monospace, monospace; color: var(--text); }
+  .ctx-list { list-style: none; margin: 0; padding: 0; max-height: 220px; overflow-y: auto; }
+  .ctx-list li {
+    padding: 4px 0 4px 12px; font-size: 0.75rem; color: var(--text-muted); cursor: pointer;
+    border-bottom: 1px solid var(--border); position: relative;
+  }
+  .ctx-list li:hover { color: var(--accent); }
+  .ctx-list li.visited { color: var(--text); }
+  .ctx-list li.visited::before {
+    content: ""; position: absolute; left: 0; top: 9px; width: 5px; height: 5px;
+    border-radius: 50%; background: var(--accent); opacity: 0.6;
+  }
+  .ctx-more { font-size: 0.7rem; color: var(--text-muted); font-style: italic; padding-top: 4px; }
+  .ctx-empty { font-size: 0.73rem; color: var(--text-muted); font-style: italic; }
+
+  .closure-btn {
+    width: 100%; margin-top: 6px; background: none; border: 1px dashed var(--border);
+    color: var(--accent); font-size: 0.72rem; padding: 5px 8px; border-radius: 4px;
+    cursor: pointer; font-family: inherit; text-align: left;
+  }
+  .closure-btn:hover { border-color: var(--accent); background: var(--accent-dim); }
+  .closure-body { display: none; margin-top: 8px; }
+  .closure-body.open { display: block; }
+  .closure-summary {
+    font-size: 0.7rem; color: var(--text-muted); margin-bottom: 8px; line-height: 1.5;
+  }
+  .closure-summary b { color: var(--text); font-family: ui-monospace, monospace; }
+  .depth-group { margin-bottom: 8px; }
+  .depth-group-title {
+    font-size: 0.66rem; color: var(--text-muted); text-transform: uppercase;
+    letter-spacing: 0.04em; margin-bottom: 3px;
+  }
+  .depth-group .ctx-list { max-height: 130px; }
+
+  #hud {
+    position: absolute; bottom: 12px; left: 12px; z-index: 10;
+    font-family: ui-monospace, "Cascadia Code", monospace; font-size: 0.72rem;
+    color: var(--text-muted); background: rgba(19,24,34,0.85);
+    border: 1px solid var(--border); border-radius: 6px; padding: 8px 11px;
+    line-height: 1.6; pointer-events: none;
+  }
+  #hud b { color: var(--text); }
+
+  #hint {
+    position: absolute; bottom: 12px; right: 12px; z-index: 10;
+    max-width: 260px; font-size: 0.72rem; color: var(--text-muted);
+    background: rgba(19,24,34,0.85); border: 1px solid var(--border);
+    border-radius: 6px; padding: 8px 11px; line-height: 1.5;
+  }
+
+  #tooltip {
+    position: absolute; z-index: 30; pointer-events: none;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 5px;
+    padding: 5px 9px; font-size: 0.76rem; color: var(--text); display: none;
+    max-width: 260px; box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+  }
+  #tooltip .meta { color: var(--text-muted); font-size: 0.68rem; margin-top: 2px; }
+
+  #ctxmenu {
+    position: absolute; z-index: 40; display: none;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 6px;
+    padding: 4px; font-size: 0.8rem; box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+    min-width: 190px;
+  }
+  #ctxmenu .item { padding: 6px 10px; border-radius: 4px; cursor: pointer; color: var(--text); white-space: nowrap; }
+  #ctxmenu .item:hover { background: var(--panel-2); }
+  #ctxmenu .sep { height: 1px; background: var(--border); margin: 4px 2px; }
+
+  #note-editor {
+    position: absolute; z-index: 40; display: none; width: 240px;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 6px;
+    padding: 8px; box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+  }
+  #note-editor textarea {
+    width: 100%; height: 80px; resize: vertical; background: var(--panel-2);
+    color: var(--text); border: 1px solid var(--border); border-radius: 4px;
+    font-family: inherit; font-size: 0.78rem; padding: 6px; outline: none;
+  }
+  #note-editor textarea:focus { border-color: var(--accent); }
+  #note-editor .actions { display: flex; justify-content: flex-end; gap: 6px; margin-top: 6px; }
+  #note-editor button {
+    font-family: inherit; font-size: 0.75rem; padding: 4px 10px; border-radius: 4px;
+    border: 1px solid var(--border); background: none; color: var(--text); cursor: pointer;
+  }
+  #note-editor button:hover { border-color: var(--accent); }
+  #note-editor button.primary { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+  .note-display {
+    font-size: 0.75rem; color: var(--text); background: var(--panel-2);
+    border-radius: 5px; padding: 7px 9px; margin-bottom: 6px; white-space: pre-wrap;
+    line-height: 1.4;
+  }
+  #dim-toggle-label { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; font-size: 0.75rem; color: var(--text-muted); cursor: pointer; }
+
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+</style>
+</head>
+<body>
+<div id="app">
+  <canvas id="stage"></canvas>
+
+  <div id="topbar">
+    <div id="title">ProofWiki <span class="accent">Explorer</span></div>
+    <div id="breadcrumb"></div>
+    <div id="search-wrap">
+      <input id="search" type="text" placeholder="Search concepts... (e.g. Pythagoras)" autocomplete="off">
+      <div id="search-results"></div>
+    </div>
+  </div>
+
+  <aside id="refpanel">
+    <h3>In view <span class="n" id="refpanel-count"></span></h3>
+    <div class="ref-sublabel">sorted by centrality</div>
+    <ul class="ctx-list" id="refpanel-list"></ul>
+  </aside>
+
+  <aside id="sidebar">
+    <section>
+      <h3>Concept type</h3>
+      <div id="legend"></div>
+      <label id="hide-uninteresting-label" style="display:flex;align-items:center;gap:6px;margin-top:8px;cursor:pointer;">
+        <input type="checkbox" id="hide-uninteresting"> Hide uninteresting
+      </label>
+    </section>
+    <section>
+      <h3>Physics</h3>
+      <div class="slider-row">
+        <label>Repulsion <output id="out-repulsion"></output></label>
+        <input type="range" id="s-repulsion" min="2000" max="30000" step="500">
+      </div>
+      <div class="slider-row">
+        <label>Link strength <output id="out-spring"></output></label>
+        <input type="range" id="s-spring" min="1" max="100" step="1">
+      </div>
+      <div class="slider-row">
+        <label>Centering <output id="out-center"></output></label>
+        <input type="range" id="s-center" min="0" max="50" step="1">
+      </div>
+    </section>
+    <section id="detail-panel">
+      <h3>Selected</h3>
+      <div id="detail-title"></div>
+      <div id="detail-type"></div>
+      <a id="detail-link" href="#" target="_blank" rel="noopener">View on ProofWiki &#8599;</a>
+      <label id="dim-toggle-label">
+        <input type="checkbox" id="dim-toggle"> Mark uninteresting (grey out on canvas)
+      </label>
+      <div class="ctx-group" id="note-group">
+        <div class="ctx-group-title"><span>My notes</span></div>
+        <div id="note-display" class="note-display" style="display:none"></div>
+        <button id="note-edit-btn" class="closure-btn">Add note&hellip;</button>
+      </div>
+      <div class="ctx-group" id="aliases-group" style="display:none">
+        <div class="ctx-group-title"><span>Also known as</span></div>
+        <ul class="ctx-list" id="aliases-list"></ul>
+      </div>
+      <div class="ctx-group">
+        <div class="ctx-group-title"><span>Depends on</span><span class="n" id="cites-count"></span></div>
+        <ul class="ctx-list" id="cites-list"></ul>
+        <button id="closure-btn" class="closure-btn">Show full prerequisite closure &#9656;</button>
+        <div id="closure-body" class="closure-body"></div>
+      </div>
+      <div class="ctx-group">
+        <div class="ctx-group-title"><span>Appears in</span><span class="n" id="citedby-count"></span></div>
+        <ul class="ctx-list" id="citedby-list"></ul>
+      </div>
+    </section>
+  </aside>
+
+  <div id="hud"></div>
+  <div id="hint">Click a bubble to zoom in. Click empty space to zoom out. Drag to reposition, scroll to pan/zoom the canvas. Click a node for details. Right-click a node to mark it uninteresting or add a note. Dashed outline = no proof exists on ProofWiki (open problem).</div>
+  <div id="tooltip"></div>
+  <div id="ctxmenu"></div>
+  <div id="note-editor">
+    <textarea id="note-editor-text" placeholder="Why is this interesting?"></textarea>
+    <div class="actions">
+      <button id="note-editor-cancel">Cancel</button>
+      <button id="note-editor-save" class="primary">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DATA = __VIZ_DATA__;
+</script>
+<script>
+(function() {
+  "use strict";
+
+  const TYPE_COLORS = ["#3987e5", "#199e70", "#c98500", "#008300", "#9085e9"];
+  const TYPE_NAMES = DATA.typeNames;
+  const canvas = document.getElementById("stage");
+  const ctx = canvas.getContext("2d");
+  const tooltip = document.getElementById("tooltip");
+  const hud = document.getElementById("hud");
+
+  function resize() {
+    canvas.width = window.innerWidth * devicePixelRatio;
+    canvas.height = window.innerHeight * devicePixelRatio;
+    canvas.style.width = window.innerWidth + "px";
+    canvas.style.height = window.innerHeight + "px";
+  }
+  window.addEventListener("resize", resize);
+  resize();
+
+  // ---------------------------------------------------------------------
+  // Precompute indices
+  // ---------------------------------------------------------------------
+  const N = DATA.titles.length;
+  const tree = DATA.tree;
+
+  const leafMembers = new Map();
+  for (let i = 0; i < N; i++) {
+    const c = DATA.nodeCluster[i];
+    if (!leafMembers.has(c)) leafMembers.set(c, []);
+    leafMembers.get(c).push(i);
+  }
+
+  const leafEdges = new Map();
+  for (const [si, ti, et] of DATA.intraEdges) {
+    const c = DATA.nodeCluster[si];
+    if (!leafEdges.has(c)) leafEdges.set(c, []);
+    leafEdges.get(c).push([si, ti, et]);
+  }
+
+  const clusterAdj = new Map();
+  function addAdj(a, b, w) {
+    if (!clusterAdj.has(a)) clusterAdj.set(a, new Map());
+    const m = clusterAdj.get(a);
+    m.set(b, (m.get(b) || 0) + w);
+  }
+  for (const e of DATA.interClusterEdges) {
+    addAdj(e.a, e.b, e.w);
+    addAdj(e.b, e.a, e.w);
+  }
+
+  // Full cross-cluster citation index (not limited to same-leaf-cluster like
+  // leafEdges above) -- this is what "show every context this concept
+  // appears in" actually needs, since a load-bearing definition's citations
+  // are mostly scattered across many different clusters, not its own.
+  // Each fullEdges entry is [source, target, isStrict] -- isStrict marks a
+  // genuine dependency (theorem statement / proof body) vs. a loose
+  // "Also see" cross-reference. cites/citedBy include everything (richer
+  // one-hop browsing); strictCites/strictCitedBy are the subset the
+  // prerequisite closure walks, since including see_also there caused the
+  // closure to explode to thousands of nodes within a few hops.
+  const citedBy = new Map();
+  const cites = new Map();
+  const strictCites = new Map();
+  const strictCitedBy = new Map();
+  for (const [si, ti, isStrict] of DATA.fullEdges) {
+    if (!cites.has(si)) cites.set(si, []);
+    cites.get(si).push(ti);
+    if (!citedBy.has(ti)) citedBy.set(ti, []);
+    citedBy.get(ti).push(si);
+    if (isStrict) {
+      if (!strictCites.has(si)) strictCites.set(si, []);
+      strictCites.get(si).push(ti);
+      if (!strictCitedBy.has(ti)) strictCitedBy.set(ti, []);
+      strictCitedBy.get(ti).push(si);
+    }
+  }
+
+  // Synonym lists extracted from "Also known as"/"Also defined as"/"Also
+  // presented as" sections (bold-wrapped wikilinks -- see build_graph.py).
+  // Symmetric: if A lists B as an alias, B should also surface A.
+  const aliasesOf = new Map();
+  for (const [i, j] of DATA.aliasPairs) {
+    if (!aliasesOf.has(i)) aliasesOf.set(i, []);
+    aliasesOf.get(i).push(j);
+    if (!aliasesOf.has(j)) aliasesOf.set(j, []);
+    aliasesOf.get(j).push(i);
+  }
+  // Plain-text aliases (bold but not a wikilink, e.g. '''primal element'''
+  // in Axiom:Peano's Axioms/Also defined as) -- no node to point to, so
+  // these render as inert text rather than clickable rows.
+  const aliasNamesOf = new Map();
+  for (const [i, name] of DATA.aliasNamePairs) {
+    if (!aliasNamesOf.has(i)) aliasNamesOf.set(i, []);
+    aliasNamesOf.get(i).push(name);
+  }
+
+  // titles for search, prebuilt lowercase for matching
+  const titlesLower = DATA.titles.map(t => t.toLowerCase());
+
+  // node -> which top-level chain (for search auto-navigation)
+  function ancestorChain(clusterIdx) {
+    const chain = [];
+    let cur = clusterIdx;
+    while (cur !== -1) {
+      chain.push(cur);
+      cur = tree[cur].p;
+    }
+    chain.reverse();
+    return chain;
+  }
+
+  // Visited-node tracking (access-gated discovery, visited-hyperlink
+  // convention): a concept you've already opened the detail panel for gets
+  // a quiet, permanent mark, so broad side-by-side exploration across many
+  // contexts leaves a visible trail of what's already been seen.
+  const visitedNodes = new Set();
+
+  // ---------------------------------------------------------------------
+  // Personal annotations (uninteresting/dim + free-text notes), persisted
+  // to localStorage so they survive across sessions -- the whole point of
+  // marking something as interesting is to still see it next time. Keyed
+  // by TITLE, not node index: indices are only stable within one build of
+  // viz_data.json, and this file may be regenerated against a newer
+  // ProofWiki dump later without indices lining up the same way.
+  // ---------------------------------------------------------------------
+  const ANNOT_KEY = "proofwiki-explorer-annotations-v1";
+  function loadAnnotations() {
+    try {
+      const raw = localStorage.getItem(ANNOT_KEY);
+      if (!raw) return new Map();
+      return new Map(Object.entries(JSON.parse(raw)));
+    } catch (e) { return new Map(); }
+  }
+  const annotations = loadAnnotations();
+  function saveAnnotations() {
+    const obj = {};
+    for (const [k, v] of annotations) obj[k] = v;
+    try { localStorage.setItem(ANNOT_KEY, JSON.stringify(obj)); } catch (e) { /* storage unavailable/full -- annotation still holds for this session */ }
+  }
+  function getAnnot(title) { return annotations.get(title) || null; }
+  function setAnnot(title, patch) {
+    const cur = annotations.get(title) || { dim: false, note: "" };
+    const next = Object.assign({}, cur, patch);
+    if (!next.dim && !(next.note && next.note.trim())) annotations.delete(title);
+    else annotations.set(title, next);
+    saveAnnotations();
+    refreshAnnotUI();
+  }
+
+  // ---------------------------------------------------------------------
+  // View state
+  // ---------------------------------------------------------------------
+  // stack entries: {type:'cluster', id} | {type:'leaf', id} | {type:'isolated', parent, ids, label}
+  let viewStack = [{ type: "cluster", id: DATA.root }];
+
+  let bodies = [];      // {key, kind:'cluster'|'node'|'isolatedGroup', refId, x,y,vx,vy,r,label,typeColorIdx,fixed,memberIds}
+  let simEdges = [];    // {a index into bodies, b index into bodies, w}
+  let hot = true;
+  let selectedBody = null;
+  let hoveredBody = null;
+
+  // d3-force-style cooling schedule (researched from d3/d3-force's actual
+  // source rather than reinvented): alpha starts at 1 and decays
+  // exponentially toward 0 each tick, scaling every force's contribution
+  // down with it, so the layout settles into a bounded, predictable ~300-tick
+  // cool-down instead of relying purely on velocity damping to happen to
+  // reach equilibrium (which has no guaranteed settle time and can jitter
+  // indefinitely for some configurations). ALPHA_MIN/ALPHA_DECAY use the same
+  // derivation d3-force does; the repulsion/spring/velocity-decay/speed-clamp
+  // constants below are our own already-validated tuning and are untouched --
+  // only the cooling structure and the link-bias idea (see simStep) are
+  // ported in, not d3's absolute force magnitudes (its defaults are tuned for
+  // a completely different force scale than ours).
+  let alpha = 1;
+  const ALPHA_MIN = 0.005;
+  const ALPHA_DECAY = 1 - Math.pow(ALPHA_MIN, 1 / 300);
+  function reheat() { alpha = 1; hot = true; }
+  // Per-body edge count, recomputed whenever the view (and so simEdges)
+  // changes -- feeds the link-force degree bias in simStep: a hub with many
+  // edges should move LESS per edge than a peripheral node with only one or
+  // two, since repositioning a hub disturbs every one of its edges at once
+  // while a peripheral node only disturbs this single one. Without this, hub
+  // concepts get yanked around by every incident spring with full force
+  // simultaneously, which is exactly backwards -- ported from d3-force's
+  // link.js bias formula (bias = source's degree share of the pair's total).
+  let edgeDegree = [];
+  function recomputeEdgeDegree() {
+    edgeDegree = new Array(bodies.length).fill(0);
+    for (const e of simEdges) { edgeDegree[e.a]++; edgeDegree[e.b]++; }
+  }
+
+  const ISOLATE_BUCKET_THRESHOLD = 6;
+
+  function dominantTypeIdx(tc) {
+    let best = 0;
+    for (let i = 1; i < 5; i++) if (tc[i] > tc[best]) best = i;
+    return best;
+  }
+
+  function buildClusterView(clusterIdx) {
+    const node = tree[clusterIdx];
+    const childIds = node.children;
+    const childSet = new Set(childIds);
+
+    // partition into connected vs isolated (within this sibling set)
+    const connected = [];
+    const isolated = [];
+    for (const cid of childIds) {
+      const adj = clusterAdj.get(cid);
+      let hasLocalEdge = false;
+      if (adj) {
+        for (const other of adj.keys()) {
+          if (childSet.has(other)) { hasLocalEdge = true; break; }
+        }
+      }
+      (hasLocalEdge ? connected : isolated).push(cid);
+    }
+
+    const displayIds = connected.slice();
+    let miscGroup = null;
+    if (isolated.length > ISOLATE_BUCKET_THRESHOLD) {
+      miscGroup = isolated;
+    } else {
+      displayIds.push(...isolated);
+    }
+
+    const sizes = childIds.map(c => tree[c].size);
+    const maxSize = Math.max(...sizes, 1);
+
+    function radiusFor(size) {
+      return 6 + 46 * Math.sqrt(size / maxSize);
+    }
+
+    const newBodies = [];
+    const idToBodyIdx = new Map();
+    for (const cid of displayIds) {
+      const t = tree[cid];
+      const idx = newBodies.length;
+      idToBodyIdx.set(cid, idx);
+      newBodies.push({
+        key: "c" + cid, kind: "cluster", refId: cid,
+        x: (Math.random() - 0.5) * 400, y: (Math.random() - 0.5) * 400,
+        vx: 0, vy: 0, r: radiusFor(t.size),
+        label: t.label, typeColorIdx: dominantTypeIdx(t.tc), tc: t.tc,
+        fixed: false, memberIds: null, count: t.size,
+      });
+    }
+    if (miscGroup) {
+      const miscSize = miscGroup.reduce((s, c) => s + tree[c].size, 0);
+      const miscTc = [0, 0, 0, 0, 0];
+      for (const c of miscGroup) for (let i = 0; i < 5; i++) miscTc[i] += tree[c].tc[i];
+      const idx = newBodies.length;
+      newBodies.push({
+        key: "misc", kind: "isolatedGroup", refId: null,
+        x: (Math.random() - 0.5) * 500, y: (Math.random() - 0.5) * 500,
+        vx: 0, vy: 0, r: radiusFor(miscSize) * 0.8,
+        label: "Miscellaneous (" + miscGroup.length + ")", typeColorIdx: dominantTypeIdx(miscTc), tc: miscTc,
+        fixed: false, memberIds: miscGroup, count: miscSize,
+      });
+    }
+
+    const newEdges = [];
+    const seenPairs = new Set();
+    for (const cid of displayIds) {
+      const adj = clusterAdj.get(cid);
+      if (!adj) continue;
+      for (const [other, w] of adj) {
+        if (!idToBodyIdx.has(other) || other === cid) continue;
+        const a = idToBodyIdx.get(cid), b = idToBodyIdx.get(other);
+        const key = a < b ? a + "_" + b : b + "_" + a;
+        if (seenPairs.has(key)) continue;
+        seenPairs.add(key);
+        newEdges.push({ a, b, w });
+      }
+    }
+
+    bodies = newBodies;
+    simEdges = newEdges;
+    hot = true;
+    selectedBody = null;
+    closeDetail();
+  }
+
+  function buildLeafView(clusterIdx) {
+    const members = leafMembers.get(clusterIdx) || [];
+    const edges = leafEdges.get(clusterIdx) || [];
+    const sizes = members.map(m => DATA.nodeSize[m]);
+    const maxSize = Math.max(...sizes, 1);
+
+    function radiusFor(size) {
+      return 5 + 22 * Math.sqrt(size / maxSize);
+    }
+
+    const newBodies = [];
+    const idToBodyIdx = new Map();
+    for (const m of members) {
+      const idx = newBodies.length;
+      idToBodyIdx.set(m, idx);
+      newBodies.push({
+        key: "n" + m, kind: "node", refId: m,
+        x: (Math.random() - 0.5) * 300, y: (Math.random() - 0.5) * 300,
+        vx: 0, vy: 0, r: radiusFor(DATA.nodeSize[m]),
+        label: DATA.titles[m], typeColorIdx: DATA.nodeType[m],
+        fixed: false, memberIds: null,
+        // "centrality" = how many other concepts cite this one, globally --
+        // the actual load-bearing measure, not just local edge count
+        count: (citedBy.get(m) || []).length,
+      });
+    }
+    const newEdges = [];
+    for (const [si, ti, et] of edges) {
+      if (!idToBodyIdx.has(si) || !idToBodyIdx.has(ti)) continue;
+      newEdges.push({ a: idToBodyIdx.get(si), b: idToBodyIdx.get(ti), w: 3, etype: et });
+    }
+
+    bodies = newBodies;
+    simEdges = newEdges;
+    hot = true;
+    selectedBody = null;
+    closeDetail();
+  }
+
+  function buildIsolatedGroupView(ids) {
+    const sizes = ids.map(c => tree[c].size);
+    const maxSize = Math.max(...sizes, 1);
+    function radiusFor(size) { return 5 + 30 * Math.sqrt(size / maxSize); }
+    const newBodies = ids.map(cid => {
+      const t = tree[cid];
+      return {
+        key: "c" + cid, kind: "cluster", refId: cid,
+        x: (Math.random() - 0.5) * 400, y: (Math.random() - 0.5) * 400,
+        vx: 0, vy: 0, r: radiusFor(t.size),
+        label: t.label, typeColorIdx: dominantTypeIdx(t.tc), tc: t.tc,
+        fixed: false, memberIds: null, count: t.size,
+      };
+    });
+    bodies = newBodies;
+    simEdges = [];
+    hot = true;
+    selectedBody = null;
+    closeDetail();
+  }
+
+  function currentEntry() { return viewStack[viewStack.length - 1]; }
+
+  function rebuildView() {
+    const entry = currentEntry();
+    if (entry.type === "cluster") {
+      const node = tree[entry.id];
+      if (node.leaf) buildLeafView(entry.id);
+      else buildClusterView(entry.id);
+    } else if (entry.type === "isolated") {
+      buildIsolatedGroupView(entry.ids);
+    }
+    recomputeEdgeDegree();
+    reheat();
+    resetCamera();
+    renderBreadcrumb();
+    renderRefList();
+  }
+
+  // ---------------------------------------------------------------------
+  // Reference list: a linear, scannable, centrality-sorted readout of
+  // everything in the current view -- hovering a row highlights the body
+  // on the canvas (and vice versa), clicking it does the same thing a
+  // canvas click would (zoom in / open detail). This is the non-spatial
+  // fallback for when position + a small label is hard to parse at a
+  // glance, especially in the dense connected core.
+  // ---------------------------------------------------------------------
+  // Which "/"-groups are currently expanded in the reference sidebar --
+  // keyed by prefix string, reset naturally on view change since
+  // renderRefList runs fresh each time (new prefixes, old keys just don't
+  // match anything and are harmless to leave around).
+  const expandedGroups = new Set();
+
+  // Builds the CONTENT of a row (toggle-less) as a flex <div> -- reused both
+  // for plain leaf items (wrapped directly in an <li>) and for a group's own
+  // header (wrapped in a group <li> alongside its nested <ul> of children).
+  // Kept separate from the <li> itself because a group's <li> is NOT a flex
+  // container: it stacks its header row on top of its nested children <ul>,
+  // block-style, the same way every real tree-view implementation (jstree,
+  // VS Code's own explorer, etc.) structures this -- see the rl-children
+  // comment below for why this replaced the old flat-list approach.
+  function makeRowContent(b, displayLabel) {
+    const row = document.createElement("div");
+    row.className = "rl-row";
+    const isVisited = b.kind === "node" && visitedNodes.has(b.refId);
+    if (isVisited) row.classList.add("visited");
+    const annot = b.kind === "node" ? getAnnot(DATA.titles[b.refId]) : null;
+    if (annot && annot.dim) row.classList.add("dimmed");
+    row.dataset.key = b.key;
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "rl-name";
+    if (annot && annot.note && annot.note.trim()) {
+      const noteMark = document.createElement("span");
+      noteMark.className = "rl-note";
+      noteMark.textContent = "■ ";
+      nameSpan.appendChild(noteMark);
+    }
+    nameSpan.appendChild(document.createTextNode(displayLabel));
+    const countSpan = document.createElement("span");
+    countSpan.className = "rl-count";
+    countSpan.textContent = b.count != null ? b.count : "";
+    row.appendChild(nameSpan);
+    row.appendChild(countSpan);
+    row.addEventListener("mouseenter", () => { hoveredBody = b; row.classList.add("hoverlink"); });
+    row.addEventListener("mouseleave", () => { if (hoveredBody === b) hoveredBody = null; row.classList.remove("hoverlink"); });
+    row.addEventListener("click", () => handleClick(b));
+    return row;
+  }
+
+  function makeVirtualRowContent(label) {
+    const row = document.createElement("div");
+    row.className = "rl-row rl-virtual";
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "rl-name";
+    nameSpan.textContent = label;
+    row.appendChild(nameSpan);
+    return row;
+  }
+
+  // ---------------------------------------------------------------------
+  // Recursive prefix tree for the "In view" sidebar's VS Code-style folder
+  // grouping. Titles can nest arbitrarily deep (e.g. "Law of Cosines/Proof
+  // 3/Acute Triangle"), so this builds a real trie instead of a one-shot
+  // lastIndexOf("/") split. Chains of singleton folders (a prefix with
+  // exactly one child and no real node of its own) are dissolved/flattened
+  // so a unique deep title still reads as one plain row with its full
+  // label, matching the old behavior for the common (non-shared-prefix)
+  // case.
+  // ---------------------------------------------------------------------
+  function buildPrefixTree(items) {
+    const root = { fullPath: "", body: null, children: new Map() };
+    for (const b of items) {
+      const segs = b.label.split("/");
+      let cur = root;
+      let path = "";
+      for (const seg of segs) {
+        path = path ? path + "/" + seg : seg;
+        if (!cur.children.has(seg)) cur.children.set(seg, { fullPath: path, body: null, children: new Map() });
+        cur = cur.children.get(seg);
+      }
+      cur.body = b;
+    }
+    return root;
+  }
+
+  function nodeToRows(node) {
+    const childList = [...node.children.values()];
+    if (childList.length === 0) return [{ kind: "item", body: node.body }];
+    if (childList.length === 1 && !node.body) return nodeToRows(childList[0]);
+    const children = [];
+    for (const c of childList) children.push(...nodeToRows(c));
+    return [{ kind: "group", fullPath: node.fullPath, header: node.body, children }];
+  }
+
+  function rowSortKey(row) {
+    if (row.kind === "item") return row.body.count || 0;
+    let best = row.header ? (row.header.count || 0) : 0;
+    for (const c of row.children) best = Math.max(best, rowSortKey(c));
+    return best;
+  }
+
+  function rowLeafCount(row) {
+    if (row.kind === "item") return 1;
+    return row.children.reduce((s, c) => s + rowLeafCount(c), 0);
+  }
+
+  // Real nested <ul>/<li> per level -- the pattern every mature tree-view
+  // implementation uses (jstree, js-treeview, VS Code's own explorer), unlike
+  // the flat single-<ul>-with-computed-pixel-indentation this replaced.
+  // Indentation is now free: each nested <ul class="rl-children"> just has
+  // its own fixed CSS padding-left, and it compounds automatically through
+  // however many levels deep the DOM actually is -- no depth*N arithmetic in
+  // JS to get subtly wrong. Expanding/collapsing a group only builds (once,
+  // lazily) and shows/hides THAT node's own children <ul>; it never rebuilds
+  // the rest of the tree, unlike the old version which called the equivalent
+  // of renderRefList() (a full rebuild of the entire sidebar) on every single
+  // toggle click.
+  function buildTreeInto(container, rows, relativePrefix) {
+    // Folders before files, the standard file-explorer convention (VS Code,
+    // Finder, jstree all do this) -- within each bucket, still highest-
+    // centrality first.
+    const sorted = rows.slice().sort((a, b) => {
+      if (a.kind !== b.kind) return a.kind === "group" ? -1 : 1;
+      return rowSortKey(b) - rowSortKey(a);
+    });
+    for (const row of sorted) {
+      if (row.kind === "item") {
+        const label = relativePrefix ? row.body.label.slice(relativePrefix.length + 1) : row.body.label;
+        const li = document.createElement("li");
+        li.appendChild(makeRowContent(row.body, label));
+        container.appendChild(li);
+        continue;
+      }
+      const label = relativePrefix ? row.fullPath.slice(relativePrefix.length + 1) : row.fullPath;
+      const li = document.createElement("li");
+      li.className = "rl-group";
+      const rowEl = row.header ? makeRowContent(row.header, label) : makeVirtualRowContent(label);
+      const toggle = document.createElement("span");
+      toggle.className = "rl-toggle";
+      toggle.textContent = "▸";
+      rowEl.prepend(toggle);
+      rowEl.title = `${rowLeafCount(row)} items`;
+      li.appendChild(rowEl);
+
+      let childUl = null; // built lazily on first expand, then just shown/hidden
+      const setOpen = (open) => {
+        toggle.textContent = open ? "▾" : "▸";
+        if (open) {
+          if (!childUl) {
+            childUl = document.createElement("ul");
+            childUl.className = "rl-children";
+            buildTreeInto(childUl, row.children, row.fullPath);
+            li.appendChild(childUl);
+          }
+          childUl.classList.remove("collapsed");
+          expandedGroups.add(row.fullPath);
+        } else {
+          if (childUl) childUl.classList.add("collapsed");
+          expandedGroups.delete(row.fullPath);
+        }
+      };
+      const doToggle = (ev) => { ev.stopPropagation(); setOpen(!expandedGroups.has(row.fullPath)); };
+      toggle.addEventListener("click", doToggle);
+      // A "virtual" group (no real node backing it, e.g. two subpages
+      // sharing a prefix that isn't itself a page) has no competing
+      // "navigate to this node" click behavior to protect, so the whole row
+      // toggles too -- no reason to make the user hunt for the small arrow.
+      if (!row.header) rowEl.addEventListener("click", doToggle);
+      if (expandedGroups.has(row.fullPath)) setOpen(true);
+      container.appendChild(li);
+    }
+  }
+
+  function renderRefList() {
+    const ul = document.getElementById("refpanel-list");
+    const visible = bodies.filter(bodyTypeActive);
+    document.getElementById("refpanel-count").textContent = visible.length;
+    ul.innerHTML = "";
+
+    const root = buildPrefixTree(visible);
+    const topRows = [];
+    for (const c of root.children.values()) topRows.push(...nodeToRows(c));
+    buildTreeInto(ul, topRows, "");
+  }
+
+  function pushClusterOrLeaf(clusterIdx) {
+    viewStack.push({ type: "cluster", id: clusterIdx });
+    rebuildView();
+  }
+
+  function pushIsolatedGroup(parentId, ids) {
+    viewStack.push({ type: "isolated", parent: parentId, ids: ids, label: "Miscellaneous" });
+    rebuildView();
+  }
+
+  function popView() {
+    if (viewStack.length > 1) {
+      viewStack.pop();
+      rebuildView();
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // Breadcrumb
+  // ---------------------------------------------------------------------
+  function renderBreadcrumb() {
+    const el = document.getElementById("breadcrumb");
+    el.innerHTML = "";
+    const parts = [];
+    // build labels: walk viewStack, for 'cluster' entries use ancestor chain from tree
+    const first = viewStack[0];
+    const chain = first.type === "cluster" ? ancestorChain(first.id) : [];
+    // Simpler: just show each stack entry's label via tree lookups, using root label as "All"
+    const crumbs = [];
+    for (let i = 0; i < viewStack.length; i++) {
+      const entry = viewStack[i];
+      if (entry.type === "cluster") {
+        const label = entry.id === DATA.root ? "All Concepts" : tree[entry.id].label;
+        crumbs.push({ label, index: i });
+      } else {
+        crumbs.push({ label: entry.label, index: i });
+      }
+    }
+    crumbs.forEach((c, i) => {
+      if (i > 0) {
+        const sep = document.createElement("span");
+        sep.className = "sep"; sep.textContent = "›";
+        el.appendChild(sep);
+      }
+      const btn = document.createElement("button");
+      btn.textContent = c.label;
+      if (i === crumbs.length - 1) btn.classList.add("current");
+      btn.onclick = () => { viewStack = viewStack.slice(0, c.index + 1); rebuildView(); };
+      el.appendChild(btn);
+    });
+  }
+
+  // ---------------------------------------------------------------------
+  // Camera (pan/zoom)
+  // ---------------------------------------------------------------------
+  let cam = { x: 0, y: 0, scale: 1 };
+  function resetCamera() { cam = { x: 0, y: 0, scale: 1 }; }
+
+  function worldToScreen(x, y) {
+    return [
+      canvas.width / 2 + (x + cam.x) * cam.scale,
+      canvas.height / 2 + (y + cam.y) * cam.scale,
+    ];
+  }
+  function screenToWorld(sx, sy) {
+    return [
+      (sx - canvas.width / 2) / cam.scale - cam.x,
+      (sy - canvas.height / 2) / cam.scale - cam.y,
+    ];
+  }
+
+  // ---------------------------------------------------------------------
+  // Physics (ported from the validated Python reference implementation --
+  // same distance floor + force/speed clamps that fixed the exploding
+  // static preview simulation)
+  // ---------------------------------------------------------------------
+  const physics = { repulsion: 12000, spring: 20, center: 2 };
+
+  function simStep() {
+    const n = bodies.length;
+    if (n === 0) return;
+    const fx = new Float64Array(n), fy = new Float64Array(n);
+
+    for (let i = 0; i < n; i++) {
+      const a = bodies[i];
+      for (let j = i + 1; j < n; j++) {
+        const b = bodies[j];
+        let dx = a.x - b.x, dy = a.y - b.y;
+        let dist = Math.hypot(dx, dy);
+        if (dist < 1e-3) {
+          const ang = Math.random() * Math.PI * 2;
+          dx = Math.cos(ang); dy = Math.sin(ang); dist = 1;
+        }
+        const minSep = a.r + b.r + 4;
+        const effDist = Math.max(dist, minSep * 0.5);
+        let f = physics.repulsion * Math.sqrt(a.r * b.r) / (effDist * effDist);
+        if (dist < minSep) f += (minSep - dist) * 8;
+        f = Math.min(f, 400);
+        const ux = dx / dist, uy = dy / dist;
+        fx[i] += f * ux; fy[i] += f * uy;
+        fx[j] -= f * ux; fy[j] -= f * uy;
+      }
+    }
+
+    const maxW = Math.max(...simEdges.map(e => Math.log1p(e.w)), 1);
+    for (const e of simEdges) {
+      const a = bodies[e.a], b = bodies[e.b];
+      const dx = b.x - a.x, dy = b.y - a.y;
+      const dist = Math.hypot(dx, dy) || 1e-3;
+      const rest = (a.r + b.r) * 2.2;
+      const strength = (physics.spring / 1000) * (Math.log1p(e.w) / maxW);
+      const f = strength * (dist - rest);
+      const ux = dx / dist, uy = dy / dist;
+      // Link-force degree bias (ported from d3-force's link.js): each side's
+      // share of the correction is proportional to the OTHER side's degree,
+      // so a hub (many edges) moves less per-edge than a peripheral node
+      // (few edges) -- multiplying by 2 keeps the equal-degree case identical
+      // to the old unbiased ±f behavior (fracA=fracB=1 when degA===degB), so
+      // this only changes anything for edges actually touching a hub.
+      const degA = edgeDegree[e.a] || 1, degB = edgeDegree[e.b] || 1;
+      const fracA = (degB / (degA + degB)) * 2;
+      const fracB = (degA / (degA + degB)) * 2;
+      fx[e.a] += f * ux * fracA; fy[e.a] += f * uy * fracA;
+      fx[e.b] -= f * ux * fracB; fy[e.b] -= f * uy * fracB;
+    }
+
+    const centerK = physics.center / 1000;
+    for (let i = 0; i < n; i++) {
+      const a = bodies[i];
+      if (a.fixed) { a.vx = 0; a.vy = 0; continue; }
+      fx[i] -= a.x * centerK;
+      fy[i] -= a.y * centerK;
+      let vx = (a.vx + fx[i] * alpha) * 0.82;
+      let vy = (a.vy + fy[i] * alpha) * 0.82;
+      const speed = Math.hypot(vx, vy);
+      if (speed > 60) { vx = vx / speed * 60; vy = vy / speed * 60; }
+      a.vx = vx; a.vy = vy;
+      a.x += vx; a.y += vy;
+    }
+    // d3-force-style cooling: alpha decays exponentially toward 0 every tick
+    // regardless of how the layout looks, so settling is bounded (~300 ticks)
+    // and predictable instead of depending entirely on velocity happening to
+    // reach a stable equilibrium (which had no guaranteed settle time).
+    alpha += (0 - alpha) * ALPHA_DECAY;
+    hot = alpha > ALPHA_MIN || dragBody !== null;
+  }
+
+  // ---------------------------------------------------------------------
+  // Rendering
+  // ---------------------------------------------------------------------
+  function labelPriority(b) { return b.r; }
+
+  function render() {
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = "#0a0d12";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.save();
+    ctx.translate(canvas.width / 2 + cam.x * cam.scale, canvas.height / 2 + cam.y * cam.scale);
+    ctx.scale(cam.scale, cam.scale);
+
+    // Edges touching the selected node draw in a second, later pass (so
+    // they land on top of everything else) in a bright accent color at
+    // full width -- the rest stay dim. This answers "what is this thing
+    // actually connected to" at a glance instead of having to trace thin
+    // gray lines by eye.
+    const selectedConnected = [];
+    for (const e of simEdges) {
+      const a = bodies[e.a], b = bodies[e.b];
+      if (!bodyTypeActive(a) || !bodyTypeActive(b)) continue;
+      if (selectedBody && (a === selectedBody || b === selectedBody)) {
+        selectedConnected.push(e);
+        continue;
+      }
+      const op = Math.min(0.45, 0.06 + Math.log1p(e.w) * 0.05);
+      ctx.strokeStyle = `rgba(120,132,158,${op})`;
+      ctx.lineWidth = 1 / cam.scale;
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+      ctx.stroke();
+    }
+    for (const e of selectedConnected) {
+      const a = bodies[e.a], b = bodies[e.b];
+      ctx.strokeStyle = "rgba(217,164,65,0.85)";
+      ctx.lineWidth = 2 / cam.scale;
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+      ctx.stroke();
+    }
+
+    // bodies
+    const visibleBodies = bodies.filter(bodyTypeActive);
+    const sorted = visibleBodies.slice().sort((a, b) => labelPriority(b) - labelPriority(a));
+    let labelBudget = 14;
+    const labeled = new Set();
+    function isDim(b) {
+      if (b.kind !== "node") return false;
+      const a = getAnnot(DATA.titles[b.refId]);
+      return !!(a && a.dim);
+    }
+    for (const b of sorted) {
+      if (isDim(b)) continue; // marked-uninteresting nodes never eat the scarce label budget
+      if (labelBudget > 0 && b.r > 10) { labeled.add(b.key); labelBudget--; }
+    }
+    if (selectedBody) labeled.add(selectedBody.key);
+    if (hoveredBody) labeled.add(hoveredBody.key);
+
+    // Second, color-independent identity channel: Theorem=circle,
+    // Definition=square, Axiom=diamond, Symbol=triangle, Proof=hexagon.
+    // Side length/circumradius constants are tuned so each shape reads at
+    // roughly the same visual weight as a circle of the same r, not an
+    // exact equal-area match.
+    function shapePath(cx, cy, r, typeIdx) {
+      ctx.beginPath();
+      if (typeIdx === 1) { // Definition: square
+        const s = r * 0.88;
+        ctx.rect(cx - s, cy - s, s * 2, s * 2);
+      } else if (typeIdx === 2) { // Axiom: diamond
+        const d = r * 1.25;
+        ctx.moveTo(cx, cy - d); ctx.lineTo(cx + d, cy);
+        ctx.lineTo(cx, cy + d); ctx.lineTo(cx - d, cy);
+        ctx.closePath();
+      } else if (typeIdx === 3) { // Symbol: triangle
+        const tr = r * 1.3;
+        for (let i = 0; i < 3; i++) {
+          const a = -Math.PI / 2 + i * (Math.PI * 2 / 3);
+          const x = cx + Math.cos(a) * tr, y = cy + Math.sin(a) * tr;
+          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+      } else if (typeIdx === 4) { // Proof: hexagon
+        const hr = r * 1.05;
+        for (let i = 0; i < 6; i++) {
+          const a = -Math.PI / 2 + i * (Math.PI / 3);
+          const x = cx + Math.cos(a) * hr, y = cy + Math.sin(a) * hr;
+          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+      } else { // Theorem (0): circle
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      }
+    }
+
+    // Rare types (Axiom is 0.46% of all concepts, Proof nodes mostly get
+    // absorbed into their parent theorem's neighborhood) almost never WIN a
+    // cluster's dominant-type vote -- a flat single-color fill was silently
+    // erasing them from every bubble view even where they're genuinely
+    // present. This draws the ring as a composition-proportional multi-arc
+    // instead, with a minimum visible sweep per present type so a single
+    // axiom in a 500-node cluster still shows up as a real amber sliver,
+    // not nothing.
+    const MIN_SWEEP = Math.PI * 2 * 0.035;
+    function drawCompositionRing(b, lineWidth) {
+      const tc = b.tc;
+      const total = tc[0] + tc[1] + tc[2] + tc[3] + tc[4];
+      if (total === 0) {
+        ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        ctx.lineWidth = lineWidth; ctx.strokeStyle = "#5a6478"; ctx.stroke();
+        return;
+      }
+      const present = [0, 1, 2, 3, 4].filter(i => tc[i] > 0);
+      const remaining = Math.max(0, Math.PI * 2 - present.length * MIN_SWEEP);
+      let angle = -Math.PI / 2;
+      for (const i of present) {
+        const sweep = MIN_SWEEP + (tc[i] / total) * remaining;
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.r, angle, angle + sweep);
+        ctx.lineWidth = lineWidth;
+        ctx.strokeStyle = TYPE_COLORS[i];
+        ctx.stroke();
+        angle += sweep;
+      }
+    }
+
+    for (const b of visibleBodies) {
+      const dim = isDim(b);
+      const color = dim ? "#3a4150" : (b.typeColorIdx === -1 ? "#5a6478" : TYPE_COLORS[b.typeColorIdx]);
+      const isHovered = b === hoveredBody && b !== selectedBody;
+      const ringWidth = (b === selectedBody ? 2.8 : isHovered ? 2.4 : 1.6) / cam.scale;
+
+      // Shape is a second, color-independent identity channel for
+      // individual concepts (Theorem=circle, Definition=square, Axiom=
+      // diamond, Symbol=triangle, Proof=hexagon) -- lets you tell types
+      // apart without relying on hue at all. Cluster/misc bubbles stay
+      // plain circles since they're a MIX of types (that's what the
+      // composition ring is for, not a single shape).
+      if (b.kind === "node") {
+        shapePath(b.x, b.y, b.r, b.typeColorIdx);
+      } else {
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+      }
+      ctx.fillStyle = color + (dim ? "55" : "8c");
+      ctx.fill();
+
+      if ((b.kind === "cluster" || b.kind === "isolatedGroup") && b.tc) {
+        drawCompositionRing(b, ringWidth);
+        if (b === selectedBody || isHovered) {
+          ctx.beginPath();
+          ctx.arc(b.x, b.y, b.r + ringWidth * 0.5 + 1.5 / cam.scale, 0, Math.PI * 2);
+          ctx.lineWidth = 1.2 / cam.scale;
+          ctx.strokeStyle = b === selectedBody ? "#d9a441" : "rgba(238,240,244,0.5)";
+          ctx.stroke();
+        }
+      } else {
+        // ~15% of theorems have no proof anywhere on ProofWiki (open
+        // problems, unproven assertions) -- a flat solid outline made those
+        // visually identical to the 85% that do have one. Dashed = no proof
+        // found (embedded or subpage); solid = proof exists in some form.
+        // Only meaningful for Theorems -- Axioms are accepted without proof
+        // by definition, so nodeHasProof is fixed at 1 for every other type.
+        const noProof = b.kind === "node" && b.typeColorIdx === 0 && DATA.nodeHasProof[b.refId] === 0;
+        if (noProof) ctx.setLineDash([4 / cam.scale, 3 / cam.scale]);
+        ctx.lineWidth = ringWidth;
+        ctx.strokeStyle = b === selectedBody ? "#d9a441" : isHovered ? "#eef0f4" : color;
+        ctx.stroke();
+        if (noProof) ctx.setLineDash([]);
+        if (isHovered) {
+          // extra outer ring so a ref-list hover reads clearly on the canvas,
+          // not just via the label it also reveals
+          ctx.beginPath();
+          ctx.arc(b.x, b.y, b.r + 3 / cam.scale, 0, Math.PI * 2);
+          ctx.lineWidth = 1 / cam.scale;
+          ctx.strokeStyle = "rgba(238,240,244,0.4)";
+          ctx.stroke();
+        }
+      }
+
+      // visited-hyperlink convention: a quiet, permanent mark on concepts
+      // already opened, so broad exploration leaves a visible trail
+      if (b.kind === "node" && visitedNodes.has(b.refId)) {
+        ctx.beginPath();
+        ctx.arc(b.x + b.r * 0.66, b.y - b.r * 0.66, Math.max(1.6, b.r * 0.22), 0, Math.PI * 2);
+        ctx.fillStyle = "#d9a441";
+        ctx.fill();
+      }
+
+      // note marker: a small square in the opposite corner from the visited
+      // dot (different shape + color so the two never get confused) for any
+      // concept with a personal note attached -- the "this one's important"
+      // signal, independent of and complementary to greying out the ones
+      // that aren't.
+      if (b.kind === "node") {
+        const a = getAnnot(DATA.titles[b.refId]);
+        if (a && a.note && a.note.trim()) {
+          const s = Math.max(2.4, b.r * 0.3);
+          ctx.fillStyle = "#f2545b";
+          ctx.fillRect(b.x - b.r * 0.66 - s / 2, b.y + b.r * 0.66 - s / 2, s, s);
+        }
+      }
+
+      if (labeled.has(b.key)) {
+        const fs = Math.max(9, Math.min(15, b.r * 0.34)) / cam.scale;
+        ctx.font = fs + "px system-ui, sans-serif";
+        ctx.fillStyle = "#eef0f4";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        let txt = b.label;
+        const maxChars = Math.max(6, Math.floor((b.r * 2.6) / (fs * 0.55)));
+        if (txt.length > maxChars) {
+          // Truncating blindly from the front (old behavior) collapses
+          // "Theorem X/Proof 1" and "Theorem X/Proof 2" to the identical
+          // visible text on small bubbles -- extremely common here since so
+          // many ProofWiki titles are "Parent/Proof N"-style subpages, and it
+          // reads as "two nodes with the same name" even though they're
+          // genuinely different (hover always showed the real full title,
+          // but that requires hovering each one instead of scanning). Keep
+          // the final "/"-segment intact and eat into the front instead, so
+          // the part that actually distinguishes siblings stays visible.
+          const slash = txt.lastIndexOf("/");
+          const tail = slash === -1 ? txt : txt.slice(slash + 1);
+          if (tail.length <= maxChars - 1) {
+            const room = maxChars - tail.length - 1;
+            txt = room > 0 ? "…" + txt.slice(txt.length - tail.length - room) : "…" + tail;
+          } else {
+            txt = tail.slice(0, maxChars - 1) + "…";
+          }
+        }
+        ctx.fillText(txt, b.x, b.y);
+      }
+    }
+    ctx.restore();
+  }
+
+  // ---------------------------------------------------------------------
+  // Detail panel
+  // ---------------------------------------------------------------------
+  function closeDetail() {
+    document.getElementById("detail-panel").classList.remove("open");
+  }
+  const CONTEXT_LIST_CAP = 150;
+
+  function fillContextList(ulId, countId, nodeIndices, emptyMsg) {
+    const ul = document.getElementById(ulId);
+    const countEl = countId ? document.getElementById(countId) : null;
+    ul.innerHTML = "";
+    if (countEl) countEl.textContent = nodeIndices.length;
+    if (nodeIndices.length === 0) {
+      const li = document.createElement("li");
+      li.className = "ctx-empty";
+      li.textContent = emptyMsg;
+      ul.appendChild(li);
+      return;
+    }
+    const shown = nodeIndices.slice(0, CONTEXT_LIST_CAP);
+    for (const nb of shown) {
+      const li = document.createElement("li");
+      li.textContent = DATA.titles[nb];
+      if (visitedNodes.has(nb)) li.classList.add("visited");
+      li.onclick = () => navigateToNode(nb);
+      ul.appendChild(li);
+    }
+    if (nodeIndices.length > CONTEXT_LIST_CAP) {
+      const li = document.createElement("li");
+      li.className = "ctx-more";
+      li.textContent = `+ ${nodeIndices.length - CONTEXT_LIST_CAP} more — use search to jump directly`;
+      ul.appendChild(li);
+    }
+  }
+
+  // Transitive prerequisite closure -- the actual useful idea borrowed from
+  // Lean Atlas's "Compass" algorithm: don't stop at one hop of "depends on,"
+  // walk the full chain of what a concept ultimately rests on. We can't
+  // replicate Compass's type-checking-based semantic pruning (ProofWiki
+  // isn't machine-verified, there's no compiler to ask "does this actually
+  // affect the meaning"), but the core value transfers directly.
+  //
+  // Two things tried and rejected before this, both checked against real
+  // data (Pythagoras's Theorem, Definition:Metric Space, Fermat's Last
+  // Theorem, Definition:Group, Bolzano-Weierstrass -- all five, every time):
+  //   - A fixed depth cutoff: works, but the "right" depth isn't the same
+  //     for every concept -- arbitrary for all of them.
+  //   - Pruning at "hub" nodes (stop expanding through anything with a high
+  //     citedBy count): DOESN'T reduce the closure at all. Even with every
+  //     hub pruned, all five still reached a 20-hop safety cutoff with
+  //     20,000+ nodes -- the graph has enough redundant paths that BFS just
+  //     routes around any pruned hub. There's no small set of culprit nodes
+  //     to blame; the density is structural to the whole graph.
+  //   - Per-hop WIDTH does have a clean, usable signal though: growth ratio
+  //     shrinks smoothly hop over hop (5-10x -> 3x -> 2x -> ~1x) as the
+  //     walk saturates the reachable graph -- not a cliff, but a curve you
+  //     can threshold. Stopping BEFORE any hop that would add more than
+  //     ~500 new nodes landed every test concept at 249-526 total nodes,
+  //     each naturally stopping at its own depth (3 hops for most, 4 for
+  //     Fermat's Last Theorem, whose early growth is slower) -- adaptive
+  //     per-concept instead of one guessed constant for everyone.
+  const CLOSURE_WIDTH_THRESHOLD = 500;
+  const CLOSURE_HARD_CAP = 6000; // last-resort safety net, shouldn't normally trigger
+
+  function computeClosure(nodeIdx, widthThreshold) {
+    const depthOf = new Map([[nodeIdx, 0]]);
+    const order = [];
+    let frontier = [nodeIdx];
+    let depth = 0;
+    let stoppedByWidth = false;
+    while (frontier.length && depthOf.size < CLOSURE_HARD_CAP) {
+      const candidates = new Set();
+      for (const n of frontier) {
+        for (const m of (strictCites.get(n) || [])) {
+          if (!depthOf.has(m)) candidates.add(m);
+        }
+      }
+      if (candidates.size === 0) break;
+      if (candidates.size > widthThreshold) { stoppedByWidth = true; break; }
+      const next = [];
+      for (const m of candidates) {
+        depthOf.set(m, depth + 1);
+        order.push(m);
+        next.push(m);
+      }
+      frontier = next;
+      depth++;
+    }
+    return { depthOf, order, stoppedByWidth, depthReached: depth };
+  }
+
+  let closureWidthThreshold = CLOSURE_WIDTH_THRESHOLD;
+
+  function renderClosure(nodeIdx) {
+    const { depthOf, order, stoppedByWidth, depthReached } = computeClosure(nodeIdx, closureWidthThreshold);
+    const body = document.getElementById("closure-body");
+    body.innerHTML = "";
+
+    const summary = document.createElement("div");
+    summary.className = "closure-summary";
+    summary.innerHTML = `<b>${order.length}</b> concepts across <b>${depthReached}</b> hops.`
+      + (stoppedByWidth
+        ? ` Stopped here because the next hop would add more than ${closureWidthThreshold} new concepts at once --`
+          + ` that's the signature of crossing from "specific to this" into shared mathematical foundations, not more depth.`
+        : ` This is the complete strict-dependency closure -- it bottoms out, nothing further to add.`);
+    body.appendChild(summary);
+
+    const byDepth = new Map();
+    for (const n of order) {
+      const d = depthOf.get(n);
+      if (!byDepth.has(d)) byDepth.set(d, []);
+      byDepth.get(d).push(n);
+    }
+    for (const d of [...byDepth.keys()].sort((a, b) => a - b)) {
+      const nodesAtDepth = byDepth.get(d).sort((a, b) => (citedBy.get(b) || []).length - (citedBy.get(a) || []).length);
+      const group = document.createElement("div");
+      group.className = "depth-group";
+      const title = document.createElement("div");
+      title.className = "depth-group-title";
+      title.textContent = `${d} hop${d > 1 ? "s" : ""} away (${nodesAtDepth.length})`;
+      group.appendChild(title);
+      const ul = document.createElement("ul");
+      ul.className = "ctx-list";
+      for (const n of nodesAtDepth) {
+        const li = document.createElement("li");
+        li.textContent = DATA.titles[n];
+        if (visitedNodes.has(n)) li.classList.add("visited");
+        li.onclick = () => navigateToNode(n);
+        ul.appendChild(li);
+      }
+      group.appendChild(ul);
+      body.appendChild(group);
+    }
+
+    if (stoppedByWidth && closureWidthThreshold < CLOSURE_HARD_CAP) {
+      const more = document.createElement("button");
+      more.className = "closure-btn";
+      more.textContent = `Push past the foundation (currently stops at ${closureWidthThreshold}/hop) ▾`;
+      more.onclick = () => { closureWidthThreshold = Math.min(CLOSURE_HARD_CAP, closureWidthThreshold * 2); renderClosure(nodeIdx); };
+      body.appendChild(more);
+    }
+  }
+
+  // Which node the detail panel currently shows, by title (matches the
+  // annotation store's key) -- lets setAnnot() refresh the dim-toggle/note
+  // display whichever way an edit came in (right-click menu or the panel's
+  // own "Add note" button both funnel through the same setAnnot call).
+  let currentDetailTitle = null;
+
+  // MediaWiki page titles use ":" as the namespace separator (Definition:,
+  // Theorem:, ...) and "/" as the subpage separator (e.g. "Law of Cosines/
+  // Proof 1") -- both are meant to appear literally in the URL. Plain
+  // encodeURIComponent() doesn't know that: it treats them as generic
+  // reserved characters and escapes them to %3A / %2F, producing a URL like
+  // ".../Definition%3ASmooth_Local_Parametrization" that still technically
+  // resolves (servers decode percent-escapes) but isn't the real ProofWiki
+  // URL. Encode everything else normally, then restore just those two.
+  function titleToWikiPath(title) {
+    return encodeURIComponent(title.replace(/ /g, "_")).replace(/%3A/g, ":").replace(/%2F/g, "/");
+  }
+
+  function refreshAnnotUI() {
+    if (!currentDetailTitle) return;
+    if (!document.getElementById("detail-panel").classList.contains("open")) return;
+    const a = getAnnot(currentDetailTitle);
+    document.getElementById("dim-toggle").checked = !!(a && a.dim);
+    const note = (a && a.note) || "";
+    const noteDisplay = document.getElementById("note-display");
+    const noteEditBtn = document.getElementById("note-edit-btn");
+    if (note.trim()) {
+      noteDisplay.textContent = note;
+      noteDisplay.style.display = "";
+      noteEditBtn.textContent = "Edit note…";
+    } else {
+      noteDisplay.style.display = "none";
+      noteEditBtn.textContent = "Add note…";
+    }
+  }
+
+  function openDetailForNode(nodeIdx) {
+    visitedNodes.add(nodeIdx);
+    const panel = document.getElementById("detail-panel");
+    panel.classList.add("open");
+    document.getElementById("detail-title").textContent = DATA.titles[nodeIdx];
+    const noProofNote = DATA.nodeType[nodeIdx] === 0 && DATA.nodeHasProof[nodeIdx] === 0
+      ? " -- no proof on ProofWiki (open problem / unproven)" : "";
+    document.getElementById("detail-type").textContent = TYPE_NAMES[DATA.nodeType[nodeIdx]] + noProofNote;
+    document.getElementById("detail-link").href =
+      "https://proofwiki.org/wiki/" + titleToWikiPath(DATA.titles[nodeIdx]);
+
+    currentDetailTitle = DATA.titles[nodeIdx];
+    const dimToggle = document.getElementById("dim-toggle");
+    dimToggle.onchange = () => setAnnot(currentDetailTitle, { dim: dimToggle.checked });
+    document.getElementById("note-edit-btn").onclick = (ev) => openNoteEditor(currentDetailTitle, ev.clientX, ev.clientY);
+    refreshAnnotUI();
+
+    const aliases = aliasesOf.get(nodeIdx) || [];
+    const aliasNames = aliasNamesOf.get(nodeIdx) || [];
+    const aliasGroup = document.getElementById("aliases-group");
+    const aliasList = document.getElementById("aliases-list");
+    if (aliases.length || aliasNames.length) {
+      aliasGroup.style.display = "";
+      aliasList.innerHTML = "";
+      // resolvable (clickable) aliases first, then plain-text-only ones
+      const sortedAliases = aliases.slice().sort((a, b) => (citedBy.get(b) || []).length - (citedBy.get(a) || []).length);
+      for (const a of sortedAliases) {
+        const li = document.createElement("li");
+        li.textContent = DATA.titles[a];
+        if (visitedNodes.has(a)) li.classList.add("visited");
+        li.onclick = () => navigateToNode(a);
+        aliasList.appendChild(li);
+      }
+      for (const name of aliasNames) {
+        const li = document.createElement("li");
+        li.textContent = name;
+        li.style.cursor = "default";
+        li.style.color = "var(--text-muted)";
+        li.style.fontStyle = "italic";
+        aliasList.appendChild(li);
+      }
+    } else {
+      aliasGroup.style.display = "none";
+    }
+
+    fillContextList("cites-list", "cites-count", strictCites.get(nodeIdx) || [], "Nothing else cited (a foundational leaf).");
+    fillContextList("citedby-list", "citedby-count", citedBy.get(nodeIdx) || [], "Not cited anywhere else yet.");
+
+    // reset the closure panel per node -- it's expensive-ish and rarely
+    // needed, so compute it lazily on demand rather than on every click
+    closureWidthThreshold = CLOSURE_WIDTH_THRESHOLD;
+    const closureBody = document.getElementById("closure-body");
+    const closureBtn = document.getElementById("closure-btn");
+    closureBody.classList.remove("open");
+    closureBody.innerHTML = "";
+    closureBtn.textContent = "Show full prerequisite closure ▶";
+    closureBtn.onclick = () => {
+      const isOpen = closureBody.classList.toggle("open");
+      closureBtn.textContent = (isOpen ? "Hide full prerequisite closure ▾" : "Show full prerequisite closure ▶");
+      if (isOpen && !closureBody.hasChildNodes()) renderClosure(nodeIdx);
+    };
+  }
+
+  // ---------------------------------------------------------------------
+  // Interaction
+  // ---------------------------------------------------------------------
+  let dragBody = null, dragMoved = false, panDrag = null, panMoved = false;
+
+  function bodyAtScreen(sx, sy) {
+    const [wx, wy] = screenToWorld(sx * devicePixelRatio, sy * devicePixelRatio);
+    let best = null, bestD = Infinity;
+    // Small bubbles (e.g. r=5) have a near-impossible hit target once
+    // zoomed out -- floor the effective hit radius so every body stays
+    // comfortably targetable regardless of its visual size.
+    const minHitR = 9 / cam.scale;
+    for (const b of bodies) {
+      if (!bodyTypeActive(b)) continue;
+      const d = Math.hypot(b.x - wx, b.y - wy);
+      const hitR = Math.max(b.r, minHitR);
+      if (d <= hitR && d < bestD) { best = b; bestD = d; }
+    }
+    return best;
+  }
+
+  canvas.addEventListener("mousedown", (ev) => {
+    // right/middle click: leave for the "contextmenu" handler below, don't
+    // let it also engage drag/pan or fall through to a left-click select on
+    // the following mouseup
+    if (ev.button !== 0) return;
+    const b = bodyAtScreen(ev.clientX, ev.clientY);
+    dragMoved = false;
+    panMoved = false;
+    if (b) { dragBody = b; b.fixed = true; }
+    else { panDrag = { sx: ev.clientX, sy: ev.clientY, camX: cam.x, camY: cam.y }; canvas.classList.add("dragging"); }
+  });
+  window.addEventListener("mousemove", (ev) => {
+    if (dragBody) {
+      dragMoved = true;
+      const [wx, wy] = screenToWorld(ev.clientX * devicePixelRatio, ev.clientY * devicePixelRatio);
+      dragBody.x = wx; dragBody.y = wy; dragBody.vx = 0; dragBody.vy = 0;
+      // Gentle reheat while manually dragging a node -- a mild floor, not a
+      // full alpha=1 reset, since only one node is being forced around and
+      // the rest of the layout just needs to keep responding smoothly to it,
+      // not restart as if from scratch (d3-force's own drag examples use the
+      // same "alphaTarget(0.3) while dragging" idiom).
+      alpha = Math.max(alpha, 0.3);
+      hot = true;
+    } else if (panDrag) {
+      panMoved = true;
+      cam.x = panDrag.camX + (ev.clientX - panDrag.sx) / cam.scale;
+      cam.y = panDrag.camY + (ev.clientY - panDrag.sy) / cam.scale;
+    } else {
+      const b = bodyAtScreen(ev.clientX, ev.clientY);
+      hoveredBody = b;
+      if (b) {
+        tooltip.style.display = "block";
+        tooltip.style.left = (ev.clientX + 14) + "px";
+        tooltip.style.top = (ev.clientY + 14) + "px";
+        const countTxt = b.kind === "node"
+          ? `${TYPE_NAMES[b.typeColorIdx]} &middot; cited by ${b.count}`
+          : b.count + " concepts";
+        tooltip.innerHTML = `<div>${b.label}</div><div class="meta">${countTxt}</div>`;
+      } else {
+        tooltip.style.display = "none";
+      }
+    }
+  });
+  window.addEventListener("mouseup", (ev) => {
+    // Everything is decided HERE, once, before any view rebuild happens.
+    // A separate native "click" listener used to also run after this and
+    // re-check bodyAtScreen() -- but by then a body-click had already
+    // rebuilt `bodies` at fresh random positions, so the click handler
+    // almost always found nothing under the cursor and called popView(),
+    // immediately undoing the zoom-in from one event earlier. That's why
+    // clicking a bubble looked broken (search-driven navigation never hit
+    // this path, so it worked fine). One decision point fixes it.
+    if (dragBody) {
+      dragBody.fixed = false;
+      if (!dragMoved) handleClick(dragBody);
+      dragBody = null;
+    } else if (panDrag) {
+      if (!panMoved) popView(); // a plain click on empty space, not a pan
+      panDrag = null;
+      canvas.classList.remove("dragging");
+    }
+  });
+  canvas.addEventListener("wheel", (ev) => {
+    ev.preventDefault();
+    const factor = Math.exp(-ev.deltaY * 0.001);
+    cam.scale = Math.min(6, Math.max(0.15, cam.scale * factor));
+  }, { passive: false });
+
+  function handleClick(b) {
+    selectedBody = b;
+    if (b.kind === "node") {
+      openDetailForNode(b.refId);
+    } else if (b.kind === "isolatedGroup") {
+      const entry = currentEntry();
+      pushIsolatedGroup(entry.type === "cluster" ? entry.id : entry.parent, b.memberIds);
+    } else if (b.kind === "cluster") {
+      pushClusterOrLeaf(b.refId);
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // Right-click annotation menu + note editor
+  // ---------------------------------------------------------------------
+  const ctxmenu = document.getElementById("ctxmenu");
+  function hideCtxMenu() { ctxmenu.style.display = "none"; }
+  function showCtxMenu(x, y, items) {
+    ctxmenu.innerHTML = "";
+    for (const it of items) {
+      const div = document.createElement("div");
+      div.className = "item";
+      div.textContent = it.label;
+      div.addEventListener("click", (ev) => {
+        // stop this click from also reaching the document-level listener
+        // below, which would otherwise immediately close a note editor
+        // this same click just opened
+        ev.stopPropagation();
+        hideCtxMenu();
+        it.action();
+      });
+      ctxmenu.appendChild(div);
+    }
+    ctxmenu.style.left = Math.min(x, window.innerWidth - 200) + "px";
+    ctxmenu.style.top = Math.min(y, window.innerHeight - items.length * 32 - 10) + "px";
+    ctxmenu.style.display = "block";
+  }
+  document.addEventListener("click", (ev) => { if (!ctxmenu.contains(ev.target)) hideCtxMenu(); });
+
+  const noteEditor = document.getElementById("note-editor");
+  const noteEditorText = document.getElementById("note-editor-text");
+  let noteEditorTitle = null;
+  function openNoteEditor(title, x, y) {
+    noteEditorTitle = title;
+    const existing = getAnnot(title);
+    noteEditorText.value = (existing && existing.note) || "";
+    noteEditor.style.left = Math.min(x, window.innerWidth - 256) + "px";
+    noteEditor.style.top = Math.min(y, window.innerHeight - 150) + "px";
+    noteEditor.style.display = "block";
+    noteEditorText.focus();
+  }
+  function closeNoteEditor() { noteEditor.style.display = "none"; noteEditorTitle = null; }
+  document.getElementById("note-editor-save").addEventListener("click", (ev) => {
+    ev.stopPropagation();
+    if (noteEditorTitle) setAnnot(noteEditorTitle, { note: noteEditorText.value });
+    closeNoteEditor();
+  });
+  document.getElementById("note-editor-cancel").addEventListener("click", (ev) => {
+    ev.stopPropagation();
+    closeNoteEditor();
+  });
+  document.addEventListener("click", (ev) => { if (!noteEditor.contains(ev.target)) closeNoteEditor(); });
+  document.addEventListener("keydown", (ev) => {
+    if (ev.key === "Escape") { hideCtxMenu(); closeNoteEditor(); }
+  });
+
+  canvas.addEventListener("contextmenu", (ev) => {
+    ev.preventDefault();
+    const b = bodyAtScreen(ev.clientX, ev.clientY);
+    if (!b || b.kind !== "node") { hideCtxMenu(); return; }
+    const title = DATA.titles[b.refId];
+    const annot = getAnnot(title);
+    const isDimmed = !!(annot && annot.dim);
+    const hasNote = !!(annot && annot.note && annot.note.trim());
+    const items = [
+      { label: isDimmed ? "Unmark uninteresting" : "Mark uninteresting (grey out)",
+        action: () => setAnnot(title, { dim: !isDimmed }) },
+      { label: hasNote ? "Edit note…" : "Add note…",
+        action: () => openNoteEditor(title, ev.clientX, ev.clientY) },
+    ];
+    if (hasNote) items.push({ label: "Remove note", action: () => setAnnot(title, { note: "" }) });
+    showCtxMenu(ev.clientX, ev.clientY, items);
+  });
+
+  // ---------------------------------------------------------------------
+  // Legend
+  // ---------------------------------------------------------------------
+  const activeTypes = new Set([0, 1, 2, 3, 4]);
+  let hideUninteresting = false;
+  function bodyTypeActive(b) {
+    if (b.kind === "node") {
+      if (!activeTypes.has(DATA.nodeType[b.refId])) return false;
+      if (hideUninteresting) {
+        const a = getAnnot(DATA.titles[b.refId]);
+        if (a && a.dim) return false;
+      }
+      return true;
+    }
+    if (b.tc) return b.tc.some((c, i) => c > 0 && activeTypes.has(i));
+    return true;
+  }
+  const TYPE_GLYPHS = ["&#9679;", "&#9632;", "&#9670;", "&#9650;", "&#11039;"]; // circle square diamond triangle hexagon
+  function renderLegend() {
+    const el = document.getElementById("legend");
+    el.innerHTML = "";
+    TYPE_NAMES.forEach((name, i) => {
+      const div = document.createElement("div");
+      div.className = "legend-item";
+      div.innerHTML = `<span class="swatch" style="color:${TYPE_COLORS[i]};background:none;font-size:11px;line-height:10px;text-align:center">${TYPE_GLYPHS[i]}</span><span>${name}</span>`;
+      div.onclick = () => {
+        if (activeTypes.has(i)) activeTypes.delete(i); else activeTypes.add(i);
+        div.classList.toggle("off");
+        renderRefList();
+      };
+      el.appendChild(div);
+    });
+  }
+  renderLegend();
+  document.getElementById("hide-uninteresting").addEventListener("change", (ev) => {
+    hideUninteresting = ev.target.checked;
+    renderRefList();
+  });
+
+  // ---------------------------------------------------------------------
+  // Physics sliders
+  // ---------------------------------------------------------------------
+  function wireSlider(id, outId, key, fmt) {
+    const input = document.getElementById(id);
+    const out = document.getElementById(outId);
+    input.value = physics[key];
+    out.textContent = fmt(physics[key]);
+    input.addEventListener("input", () => {
+      physics[key] = Number(input.value);
+      out.textContent = fmt(physics[key]);
+      reheat();
+    });
+  }
+  wireSlider("s-repulsion", "out-repulsion", "repulsion", v => v);
+  wireSlider("s-spring", "out-spring", "spring", v => v);
+  wireSlider("s-center", "out-center", "center", v => v);
+
+  // ---------------------------------------------------------------------
+  // Search
+  // ---------------------------------------------------------------------
+  const searchInput = document.getElementById("search");
+  const searchResults = document.getElementById("search-results");
+  searchInput.addEventListener("input", () => {
+    const q = searchInput.value.trim().toLowerCase();
+    if (q.length < 2) { searchResults.classList.remove("open"); return; }
+    const starts = [], contains = [];
+    for (let i = 0; i < N; i++) {
+      const t = titlesLower[i];
+      if (t.startsWith(q)) starts.push(i);
+      else if (t.includes(q)) contains.push(i);
+      if (starts.length >= 20) break;
+    }
+    const results = starts.concat(contains).slice(0, 20);
+    searchResults.innerHTML = "";
+    if (results.length === 0) { searchResults.classList.remove("open"); return; }
+    for (const idx of results) {
+      const div = document.createElement("div");
+      div.className = "search-item";
+      const mark = visitedNodes.has(idx) ? '<span style="color:#d9a441">&#9679;</span> ' : "";
+      div.innerHTML = `<span>${mark}${DATA.titles[idx]}</span><span class="t">${TYPE_NAMES[DATA.nodeType[idx]]}</span>`;
+      div.onclick = () => { navigateToNode(idx); searchResults.classList.remove("open"); searchInput.value = DATA.titles[idx]; };
+      searchResults.appendChild(div);
+    }
+    searchResults.classList.add("open");
+  });
+  document.addEventListener("click", (ev) => {
+    if (!searchResults.contains(ev.target) && ev.target !== searchInput) searchResults.classList.remove("open");
+  });
+
+  function navigateToNode(nodeIdx) {
+    const leafCluster = DATA.nodeCluster[nodeIdx];
+    const chain = ancestorChain(leafCluster); // root ... leafCluster
+    viewStack = chain.map(c => ({ type: "cluster", id: c }));
+    rebuildView();
+    // select and center on the node after the view settles a bit
+    setTimeout(() => {
+      const body = bodies.find(b => b.kind === "node" && b.refId === nodeIdx);
+      if (body) { selectedBody = body; openDetailForNode(nodeIdx); }
+    }, 50);
+  }
+
+  // ---------------------------------------------------------------------
+  // Main loop
+  // ---------------------------------------------------------------------
+  function tick() {
+    if (hot) simStep();
+    render();
+    updateHud();
+    requestAnimationFrame(tick);
+  }
+
+  function updateHud() {
+    const entry = currentEntry();
+    const scope = entry.type === "cluster"
+      ? (tree[entry.id].leaf ? "concepts" : "clusters")
+      : "clusters";
+    hud.innerHTML = `<b>${bodies.length}</b> ${scope} shown &middot; <b>${simEdges.length}</b> links visible<br>`
+      + `<b>${N.toLocaleString()}</b> total concepts &middot; <b>${tree.length.toLocaleString()}</b> total clusters`;
+  }
+
+  rebuildView();
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
